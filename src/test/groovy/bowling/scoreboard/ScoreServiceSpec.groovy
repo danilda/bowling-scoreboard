@@ -11,8 +11,8 @@ class ScoreServiceSpec extends Specification implements ServiceUnitTest<ScoreSer
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-            true == false
-    }
+//    void "test something"() {
+//        expect:"fix me"
+//            true == false
+//    }
 }

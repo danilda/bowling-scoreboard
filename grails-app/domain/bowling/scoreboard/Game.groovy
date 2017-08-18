@@ -2,6 +2,7 @@ package bowling.scoreboard
 
 class Game {
     Date date
+    User winer
 
     static hasMany = [frames: Frame, users: User]
     static constraints = {

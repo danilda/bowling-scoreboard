@@ -82,9 +82,6 @@ grails:
                 taglib: none
                 staticparts: none
 
-grails:
-    gorm:
-        failOnError: true
 endpoints:
     jmx:
         unique-names: true

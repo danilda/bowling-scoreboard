@@ -1,9 +1,9 @@
 package bowling.scoreboard
 
-import grails.testing.gorm.DomainUnitTest
+import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification
 
-class GameSpec extends Specification implements DomainUnitTest<Game> {
+class TestControllerSpec extends Specification implements ControllerUnitTest<TestController> {
 
     def setup() {
     }
