@@ -16,6 +16,6 @@ class Frame {
         rollOne range: 0..10, nullable: false
         rollTwo range: 0..10, nullable: false, validator: {val, obj -> (val + obj.rollOne) <=10}
         rollThree nullable: true, range: 0..10, validator:
-                { val, obj -> obj.number == 9 && (obj.rollOne + obj.rollTwo) == 10 && val != null || val == null }
+                { val, obj -> obj.number == 9 && (obj.rollOne + obj.rollTwo) == 10 && val != null || obj.number != 9 && val == null }
     }
 }

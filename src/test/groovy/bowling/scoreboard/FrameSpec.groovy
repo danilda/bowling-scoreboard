@@ -128,12 +128,50 @@ class FrameSpec extends Specification implements DomainUnitTest<Frame> {
             domain.rollThree = null
 
         then:
-            domain.validate(['number'])
+            domain.validate(['rollThree'])
+
         when: "validator"
             domain.number = 1
             domain.rollThree = 1
-
         then:
-            domain.validate(['number'])
+            !domain.validate(['rollThree'])
+
+        when: "validator"
+            domain.number = 3
+            domain.rollThree = 0
+        then:
+            !domain.validate(['rollThree'])
+
+        when: "validator"
+            domain.number = 9
+            domain.rollOne = 5
+            domain.rollTwo = 5
+            domain.rollThree = 8
+        then:
+            domain.validate(['rollThree'])
+
+        when: "validator"
+            domain.number = 9
+            domain.rollOne = 5
+            domain.rollTwo = 5
+            domain.rollThree = null
+        then:
+            !domain.validate(['rollThree'])
+
+        when: "validator"
+            domain.number = 9
+            domain.rollOne = 5
+            domain.rollTwo = 2
+            domain.rollThree = null
+        then:
+            domain.validate(['rollThree'])
+
+        when: "validator"
+            domain.number = 9
+            domain.rollOne = 5
+            domain.rollTwo = 2
+            domain.rollThree = 4
+        then:
+            !domain.validate(['rollThree'])
     }
 }

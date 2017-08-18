@@ -8,8 +8,8 @@ class TestController {
 
         def dima = new User(game: game, name: "dima").save()
         def masha = new User(game: game, name: "masha").save()
-        println danil
-        println danil.game
+//        println danil
+//        println danil.game
         def frame1 = new Frame(user:danil, game:danil.game, number: 1, rollOne: 3, rollTwo: 5).save(failOnError: true)
         def frame2 = new Frame(user:danil, game:danil.game, number: 2, rollOne: 3, rollTwo: 2).save()
         def frame3 = new Frame(user:danil, game:danil.game, number: 3, rollOne: 3, rollTwo: 3).save()
