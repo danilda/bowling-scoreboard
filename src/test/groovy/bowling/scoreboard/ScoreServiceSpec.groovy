@@ -14,23 +14,25 @@ class ScoreServiceSpec extends Specification implements ServiceUnitTest<ScoreSer
 
     void "test calculateFrames"() {
         when:
-            List testFrames = new ArrayList()
-            for(i in 0..8){
+            def testFrames = []
+        [0..8].each {}
+        for(i in 0..8){
                 testFrames.add new Frame(number: i, rollOne: 10, rollTwo: 0)
             }
             testFrames.add new Frame(number: 9, rollOne: 10, rollTwo: 0, rollThree: 10)
             service.calculateFrames testFrames
         then:
-            testFrames.get(0).score == 30
-            testFrames.get(1).score == 60
-            testFrames.get(2).score == 90
-            testFrames.get(3).score == 120
-            testFrames.get(4).score == 150
-            testFrames.get(5).score == 180
-            testFrames.get(6).score == 210
-            testFrames.get(7).score == 240
-            testFrames.get(8).score == 270
-            testFrames.get(9).score == 300
+        testFrames.each {it.score == (it.number + 1)*30}
+//            testFrames.get(0).score == 30
+//            testFrames.get(1).score == 60
+//            testFrames.get(2).score == 90
+//            testFrames.get(3).score == 120
+//            testFrames.get(4).score == 150
+//            testFrames.get(5).score == 180
+//            testFrames.get(6).score == 210
+//            testFrames.get(7).score == 240
+//            testFrames.get(8).score == 270
+//            testFrames.get(9).score == 300
 
         when:
             testFrames = new ArrayList()
