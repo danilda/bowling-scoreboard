@@ -11,8 +11,10 @@ class GameSpec extends Specification implements DomainUnitTest<Game> {
     def cleanup() {
     }
 
-//    void "test something"() {
-//        expect:"fix me"
-//            true == false
+//    void "test validator"() {
+//        when:
+//            domain.date = new Date()
+//        then:"fix me"
+//            domain.validate(['date'])
 //    }
 }
