@@ -69,9 +69,9 @@ class ScoreService {
                 return frames[i].rollOne + frames[i + 1].rollOne + frames[i + 2].rollOne
 //                return frames[i..i+2].each {it}
             }
-            return frames[i].score = frames[i].rollOne + frames[i + 1].rollOne + frames[i + 1].rollTwo
+            return  frames[i].rollOne + frames[i + 1].rollOne + frames[i + 1].rollTwo
         }
-        return frames[i].score = frames[i].rollOne + frames[i].rollTwo + frames[i].rollThree
+        return frames[i].rollOne + frames[i].rollTwo + frames[i].rollThree
     }
 
     private calculateSpare(List<Frame> frames, int i) {

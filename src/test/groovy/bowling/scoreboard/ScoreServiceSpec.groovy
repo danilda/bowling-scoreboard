@@ -35,17 +35,13 @@ class ScoreServiceSpec extends Specification implements ServiceUnitTest<ScoreSer
 //            testFrames.get(9).score == 300
 
         when:
-            testFrames = new ArrayList()
-            testFrames.add new Frame(number: 0, rollOne: 10, rollTwo: 0, rollThree: null)
-            testFrames.add new Frame(number: 1, rollOne: 10, rollTwo: 0, rollThree: null)
-            testFrames.add new Frame(number: 2, rollOne: 10, rollTwo: 0, rollThree: null)
-            testFrames.add new Frame(number: 3, rollOne: 7, rollTwo: 2, rollThree: null)
-            testFrames.add new Frame(number: 4, rollOne: 8, rollTwo: 2, rollThree: null)
-            testFrames.add new Frame(number: 5, rollOne: 0, rollTwo: 9, rollThree: null)
-            testFrames.add new Frame(number: 6, rollOne: 10, rollTwo: 0, rollThree: null)
-            testFrames.add new Frame(number: 7, rollOne: 7, rollTwo: 3, rollThree: null)
-            testFrames.add new Frame(number: 8, rollOne: 9, rollTwo: 0, rollThree: null)
-            testFrames.add new Frame(number: 9, rollOne: 10, rollTwo: 10, rollThree: 8)
+            testFrames = []
+            def rollsOne = [10, 10, 10, 7, 8, 0, 10, 7, 9, 10]
+            def rollsTwo = [0, 0, 0, 2, 2, 9, 0, 3, 0, 10]
+            def rollsThree = [null, null, null, null, null, null, null, null, null, 8]
+            for(i in 0..9) {
+                testFrames.add new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i], rollThree: rollsThree[i])
+            }
             service.calculateFrames testFrames
         then:
             testFrames.get(0).score == 30
