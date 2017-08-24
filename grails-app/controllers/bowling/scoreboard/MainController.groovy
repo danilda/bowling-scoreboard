@@ -1,5 +1,7 @@
 package bowling.scoreboard
 
+import grails.converters.JSON
+
 class MainController {
 
     def index() {
@@ -20,6 +22,9 @@ class MainController {
 
     def newUser() {
 
+        println params.game
+        Game game = new Game(JSON.parse(params.game))
+        respond game
     }
 
 }

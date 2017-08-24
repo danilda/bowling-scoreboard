@@ -29,6 +29,7 @@ endpoints:
     jmx:
         enabled: true
 
+
 ---
 grails:
     mime:
@@ -135,3 +136,8 @@ environments:
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
 server:
  port: 8090
+
+grails:
+    databinding:
+        dateFormats:
+              - "yyyy-MM-dd'T'HH:mm:ssZ"
