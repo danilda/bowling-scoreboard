@@ -1,5 +1,7 @@
 package bowling.scoreboard
 
+
+import commandObject.NewGame
 import grails.converters.JSON
 
 class MainController {
@@ -9,7 +11,8 @@ class MainController {
     }
 
     def newGame() {
-        respond new Game(date: new Date())
+        def d = new Date()
+        [date : d, usersCount: 0]
     }
 
     def show(Game game) {
@@ -20,11 +23,10 @@ class MainController {
         respond new Game(date: new Date())
     }
 
-    def newUser() {
-
-        println params.game
-        Game game = new Game(JSON.parse(params.game))
-        respond game
+    def newUser(NewGame model) {
+        println model
+        respond model.date
     }
+
 
 }
