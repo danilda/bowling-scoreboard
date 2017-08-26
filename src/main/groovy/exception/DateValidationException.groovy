@@ -5,4 +5,7 @@ package exception
  */
 class DateValidationException extends Exception {
     private defaultMessage = "Exception in bowling board date validation"
+    DateValidationException(String message) {
+        super(message);
+    }
 }

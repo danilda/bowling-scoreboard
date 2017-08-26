@@ -47,7 +47,7 @@ class ScoreService {
                 score = calculateOther(frames, i)
             }
             if(i != FIRS_FRAME){
-                frames[i].score = frames[i - 1] + score
+                frames[i].score = frames[i - 1].score + score
             } else {
                 frames[i].score = score
             }
@@ -57,8 +57,14 @@ class ScoreService {
     def preprocessFramesForCalculation(List<Frame> frames) throws FramesValidationException {
         frames.sort { current, next -> current.number <=> next.number }
         frames.each {
-            if (!it.validate()) {
-                throw new FramesValidationException("Exception in preprocessFramesForCalculation method");
+            if (it.validate(["rollOne", "rollTwo", "rollThree", "number"])) {
+
+            } else {
+                StringBuilder sb = new StringBuilder()
+                it.errors.allErrors.each {
+                    sb.append(it).append("\n")
+                }
+                throw new FramesValidationException(sb.toString())
             }
         }
     }
@@ -66,8 +72,10 @@ class ScoreService {
     private calculateStrike(List<Frame> frames, int i) {
         if (i != LAST_FRAME) {
             if (isStrike(frames[i + 1])) {
+                if(i+2 > LAST_FRAME){
+                    return frames[i].rollOne + frames[i + 1].rollOne + frames[i + 1].rollTwo
+                }
                 return frames[i].rollOne + frames[i + 1].rollOne + frames[i + 2].rollOne
-//                return frames[i..i+2].each {it}
             }
             return  frames[i].rollOne + frames[i + 1].rollOne + frames[i + 1].rollTwo
         }

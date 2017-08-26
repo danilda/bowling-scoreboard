@@ -5,4 +5,8 @@ package exception
  */
 class FramesValidationException extends DateValidationException{
     private defaultMessage = "Exception in frames validation "
+
+    FramesValidationException(String message) {
+        super(message)
+    }
 }
