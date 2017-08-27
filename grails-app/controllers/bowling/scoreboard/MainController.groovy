@@ -24,7 +24,6 @@ class MainController {
     }
 
     def show(Game game) {
-
         respond new Game(date: new Date())
     }
 

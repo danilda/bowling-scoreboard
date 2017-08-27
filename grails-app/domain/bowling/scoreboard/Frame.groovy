@@ -7,9 +7,8 @@ class Frame {
     Integer rollThree
     Integer score
 
-    static belongsTo = [user: User, game: Game]
+    static belongsTo = [user: User]
     static constraints = {
-        game nullable: false
         user nullable: false
         number range: 0..9, nullable: false
         score range: 0..300

@@ -7,7 +7,7 @@ class User {
     static belongsTo = [game: Game]
     static hasMany = [frames: Frame]
     static constraints = {
-        game nullable: false
+//        game nullable: false
         name nullable: false
         frames nullable: true, validator:
                 {

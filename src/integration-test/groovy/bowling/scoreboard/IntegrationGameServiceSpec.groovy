@@ -22,7 +22,7 @@ class IntegrationGameServiceSpec extends Specification {
 
     void "test something"() {
         when:
-            def rollsOne = ["10", "10", "10", "7", "8", "0", "10", "7", "9", "10"]
+            def rollsOne = [10, 10, 10, 7, 8, 0, 10, 7, 9, 10]
             def rollsTwo = [0, 0, 0, 2, 2, 9, 0, 3, 0, 10]
             def rollsThree = [null, null, null, null, null, null, null, null, null, 8]
             def name = "Danil"

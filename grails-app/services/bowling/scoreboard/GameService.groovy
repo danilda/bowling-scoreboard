@@ -18,36 +18,17 @@ class GameService {
 
     Game saveGameFromCommandGame(CommandGame commandGame) {
         Game game = commandGameInGame(commandGame)
-        game.save()
-        saveAllUsersInGame(game)
-        saveAllFramesInGame(game)
+        game.save(flush:true)
         game
-    }
-
-    def saveAllFramesInGame(Game game){
-        game.users.each { user ->
-            user.frames.each { frame ->
-                frame.save()
-            }
-        }
-    }
-
-    def saveAllUsersInGame(Game game){
-        game.users.each { user ->
-                user.save()
-        }
     }
 
     Game commandGameInGame(CommandGame commandGame) {
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT)
         Game game = new Game(date: dateFormat.parse(commandGame.date))
-        game.users = new LinkedHashSet<>()
         commandGame.users.each {
-            game.users.add(commandUserToUser(commandGame.users))
+            game.addToUsers(commandUserToUser(it))
         }
-        game.winner = findWinner(game.users)
-        game.winner.game = game
-        injectGameAndUserInFrames(game)
+        game.setWinner(findWinner(game.users))
         game
     }
 
@@ -61,20 +42,12 @@ class GameService {
         winner
     }
 
-    def injectGameAndUserInFrames(Game game){
-        game.users.each { user ->
-            user.frames.each { frame ->
-                frame.game = game
-                frame.user = user
-            }
-        }
-    }
 
     User commandUserToUser(CommandUser commandUser) {
         User user = new User(name: commandUser.name)
         List<Frame> frames = listOfCommandFrameToListOfFrame(commandUser.frames)
-        user.totalScore = frames.get(LAST_FRAME).score
-        user.frames = frames.toSet()
+//        frames.each {user.addToFrames(it)}
+//        user.totalScore = frames.get(LAST_FRAME).score
         user
     }
 
@@ -89,9 +62,9 @@ class GameService {
 
     Frame frameInGameToFrame(CommandFrame commandFrame, Integer number) {
         Frame frame = new Frame(number: number)
-        frame.rollOne = Integer.valueOf(commandFrame.rollOne)
-        frame.rollTwo = Integer.valueOf(commandFrame.rollTwo)
-        frame.rollThree = commandFrame.rollThree == null ? commandFrame.rollThree : Integer.valueOf(commandFrame.rollThree)
+        frame.rollOne = commandFrame.rollOne.toInteger()
+        frame.rollTwo = commandFrame.rollTwo.toInteger()
+        frame.rollThree = commandFrame.rollThree?.toInteger()?: null
         frame
     }
 }

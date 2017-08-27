@@ -6,16 +6,12 @@
     </head>
     <body>
         <h2> New Game ${game.date} </h2>
-        <div>
+        <div class="main middle">
             <g:form action="newUser"  method="POST">
-                <g:hiddenField name="usersCount" value="${game?.usersCount}" />
                 <g:hiddenField name="date" value="${game.date}" />
-                %{--<g:hiddenField name="users[0].frames[0].rollOne" value="1" />--}%
-                %{--<g:hiddenField name="users[0].frames[0].rollTwo" value="2" />--}%
-                %{--<g:hiddenField name="users[0].frames[0].rollThree" value="3" />--}%
-                <table>
-                    <tr>
-                        <td>Players Name</td>
+                <table class="table table-bordered">
+                    <tr class="head-row">
+                        <td rowspan="2">Players Name</td>
                         <%for(i in 1..10) {
                             if(i == 10){%>
                                 <td colspan="3">Frame ${i} </td>
@@ -24,26 +20,48 @@
                            <%}
                         }%>
                     </tr>
-                    <%for(int i = 0; i < game?.usersCount?: 0; i++){
+                    <tr class="head-row">
+
+                        <%for(i in 1..21) {
+                            if(i == 21){%>
+                        <td>Roll 3</td>
+                        <%} else {%>
+                        <td>Roll ${(i+1)%2 +1}</td>
+                        <%}
+                        }%>
+                    </tr>
+                    <%for(int i = 0; i < game?.users.size()?: 0; i++){
                         out << "<tr>"
-                        for(j in 1..22){
+                        for(int j in 1..22){
                             if(j == 1){%>
                                 <td>
-                                    <g:textField name="users[${i}].frames[10].rollThree" value="" />
+                                    <g:textField class = "name-text-field" name="users[${i}].name" value="${game.users?.get(i)?.name}" />
                                 </td>
                             <%} else if(j == 22) {%>
-                                <td><g:textField name="users[${i}].frames[10].rollThree" value="" /></td>
-                            <%} else {%>
-                                <td><g:textField name="users[${i}].frames[${i/2}].${i%2==0?"rollOne":"rollTwo"}" value="" /></td>
+                                <td><g:textField name="users[${i}].frames[9].rollThree"
+                                                 value="${game?.users[i]?.frames?.get(9)?.rollThree}" /></td>
+                            <%} else {
+                                def value
+                                int frameNumber = (j/2 - j%2/2) - 1
+                                def neededFrame = game?.users?.get(i)?.frames?.get(frameNumber)
+                                if(j%2==0){
+                                    value = neededFrame?.rollOne
+                                } else {
+                                    value = neededFrame?.rollTwo
+                                }
+                                %>
+                                <td><g:textField name="users[${i}].frames[${frameNumber}].${j%2==0?"rollOne":"rollTwo"}"
+                                                 value="${value}" /></td>
                             <%}
                         }
                         out << "</tr>"
                     }%>
                 </table>
-                <%for(i in 1..10) {%>
-
+                <%if(flash.error != null) {%>
+                    <div> <h2 class="error">Error: ${flash.error}</h2></div>
                 <%}%>
-                <g:submitButton name="create" class="save" value="New User" />
+                <g:submitButton name="create" class="btn btn-primary" value="New User" />
+                <g:actionSubmit action="saveGame" class="btn btn-primary" value="Save" />
             </g:form>
         </div>
     </body>
