@@ -3,7 +3,7 @@ package bowling.scoreboard
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class RenderServiceSpec extends Specification implements ServiceUnitTest<RenderService>{
+class GameServiceSpec extends Specification implements ServiceUnitTest<GameService>{
 
     def setup() {
     }

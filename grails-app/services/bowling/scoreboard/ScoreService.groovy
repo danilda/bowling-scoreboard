@@ -23,18 +23,6 @@ class ScoreService {
         (frame.rollOne + frame.rollTwo) == 10
     }
 
-    def saveGame(Game game) throws DateValidationException {
-
-    }
-
-    def addUsersInGame(Game game, List<User> users) throws DateValidationException {
-
-    }
-
-    def addFramesForUser(User user, List<Frame> frames) throws DateValidationException {
-
-    }
-
     def calculateFrames(List<Frame> frames) throws FramesValidationException {
         preprocessFramesForCalculation frames
         def score

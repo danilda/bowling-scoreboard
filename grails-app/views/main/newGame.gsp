@@ -61,6 +61,7 @@
                     <div> <h2 class="error">Error: ${flash.error}</h2></div>
                 <%}%>
                 <g:submitButton name="create" class="btn btn-primary" value="New User" />
+                <g:actionSubmit action="saveGame" class="btn btn-primary" value="Save" />
             </g:form>
         </div>
     </body>
