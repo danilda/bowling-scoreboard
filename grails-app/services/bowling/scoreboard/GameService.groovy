@@ -37,36 +37,36 @@ class GameService {
         List<Frame> frames = new ArrayList(10)
         for (int i = 0; i < commandFrames.size(); i++) {
             commandFrames.get(i).setNumber(i)
-            frames.add(frameInGameToFrame(commandFrames.get(i)))
+            frames.add(new Frame(commandFrames.get(i).properties))
         }
         scoreService.calculateFrames(frames)
         frames
     }
 
-    Frame frameInGameToFrame(CommandFrame commandFrame) {
-        Frame frame = new Frame(commandFrame.properties)
-//        frame.rollOne = commandFrame.rollOne
-//        frame.rollTwo = commandFrame.rollTwo
-//        frame.rollThree = commandFrame.rollThree
-        frame
+    Map getRenderMapByGame(Game game) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT)
+        def map = ["id": game.getId(), "date": sdf.format(game.date)]
+        map.put(users: getListOfUsers(game))
+        map
     }
 
-    def domainGameInCommand(Game game) {
-        def commandGame = new CommandGame()
-        game.getUsers.each { user ->
-            user.
+    List getListOfUsers(Game game) {
+        List<List> users = new ArrayList<>()
+        game.getUsers().each { user ->
+            users.add(fillFrame(user))
         }
+        users
     }
 
-    //отдельно обрабатывать список Фреймов длоя того что бы их сортировать
-    private domainUserInCommand(User user) {
-        def commandUser = new CommandUser()
-        commandUser.setFrames new ArrayList<>()
-        commandUser.setFrames(listDomainFramesInCommand(user.getFrames))
-    }
-
-    private List<CommandFrame> listDomainFramesInCommand (List<Frame> frame){
-
+    private List fillFrame(User user) {
+        List<Frame> frames = user.frames.toList()
+        List<Map> resultedFrame = new LinkedList()
+        frames.sort { current, next -> current.number <=> next.number }
+        frames.each { frame ->
+            resultedFrame.add([rollOne: frame.rollOne, rollTwo: frame.rollTwo,
+                               rollThree: frame.rollThree, totalScore: user.totalScore])
+        }
+        resultedFrame
     }
 
 }

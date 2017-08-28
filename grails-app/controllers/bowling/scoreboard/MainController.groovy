@@ -24,8 +24,7 @@ class MainController {
     }
 
     def showGame(Game game) {
-        println game
-        respond game: game
+        respond game: gameService.getRenderMapByGame(game)
     }
 
     def showAllGames() {
