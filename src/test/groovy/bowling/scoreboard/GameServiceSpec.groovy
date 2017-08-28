@@ -1,9 +1,10 @@
 package bowling.scoreboard
 
+import grails.test.hibernate.HibernateSpec
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class GameServiceSpec extends Specification implements ServiceUnitTest<GameService>{
+class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameService>{
 
     def setup() {
     }
@@ -11,8 +12,5 @@ class GameServiceSpec extends Specification implements ServiceUnitTest<GameServi
     def cleanup() {
     }
 
-//    void "test something"() {
-//        expect:"fix me"
-//            true == false
-//    }
+
 }

@@ -17,8 +17,7 @@ class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreSer
     void "calculateFrames"() {
         when:
             def testFrames = []
-        [0..8].each {}
-        for(i in 0..8){
+            for(i in 0..8){
                 testFrames.add new Frame(number: i, rollOne: 10, rollTwo: 0)
             }
             testFrames.add new Frame(number: 9, rollOne: 10, rollTwo: 10, rollThree: 10)

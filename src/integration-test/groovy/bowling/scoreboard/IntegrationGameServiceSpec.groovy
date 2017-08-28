@@ -38,9 +38,14 @@ class IntegrationGameServiceSpec extends Specification {
             commandGame.users.add(commandUser)
 
             Game game = gameService.saveGameFromCommandGame(commandGame)
+            game.save()
+            def gameId = game.getId()
+            def testGame = Game.get(gameId)
+
+
         then: "проверить равно ли 0 - false"
-            game.errors.iterator().size() == 0
-            game.date.getTime() == time
-            (++game.users.iterator()).name == name
+            testGame != null
+            testGame.date.getTime() == time
+            testGame.getUsers().first().getName() == name
     }
 }

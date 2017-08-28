@@ -9,11 +9,11 @@ class Frame {
 
     static belongsTo = [user: User]
     static constraints = {
-        user nullable: false
-        number range: 0..9, nullable: false
+        number range: 0..9
         score range: 0..300
-        rollOne range: 0..10, nullable: false
-        rollTwo range: 0..10, nullable: false, validator: {
+        score range: 0..300
+        rollOne range: 0..10
+        rollTwo range: 0..10, validator: {
             val, obj ->
                 if((val + obj.rollOne) <= 10){
                     return true

@@ -12,42 +12,24 @@ import static bowling.scoreboard.ScoreService.LAST_FRAME
 
 @Transactional
 class GameService {
-    public static final DATE_FORMAT = "MMM d, yyyy HH:mm:ss"
+    public static final DATE_FORMAT = "MMM d, yyyy HH:mm:ss SSS"
 
     ScoreService scoreService
 
-    Game saveGameFromCommandGame(CommandGame commandGame) {
-        Game game = commandGameInGame(commandGame)
-        game.save(flush:true)
-        game
-    }
-
-    Game commandGameInGame(CommandGame commandGame) {
+    Game saveGameByCommandGame(CommandGame commandGame) {
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT)
         Game game = new Game(date: dateFormat.parse(commandGame.date))
         commandGame.users.each {
             game.addToUsers(commandUserToUser(it))
         }
-        game.setWinner(findWinner(game.users))
         game
     }
-
-    User findWinner(Set<User> users) {
-        User winner = null
-        users.each {
-            if (winner == null || winner.totalScore < it.totalScore) {
-                winner = it
-            }
-        }
-        winner
-    }
-
 
     User commandUserToUser(CommandUser commandUser) {
         User user = new User(name: commandUser.name)
         List<Frame> frames = listOfCommandFrameToListOfFrame(commandUser.frames)
-//        frames.each {user.addToFrames(it)}
-//        user.totalScore = frames.get(LAST_FRAME).score
+        frames.each {user.addToFrames(it)}
+        user.totalScore = frames.get(LAST_FRAME).score
         user
     }
 
