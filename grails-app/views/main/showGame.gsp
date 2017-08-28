@@ -1,12 +1,10 @@
-<!DOCTYPE html>
 <html>
     <head>
         <title>Main Page</title>
-        <asset:stylesheet src="myStyles/createGameStyle.css"/>
     </head>
     <body>
-        <h2> New Game ${game.date} </h2>
-        <div class="main middle">
+        <h2> New User  ${date} </h2>
+        <div>
             <g:form action="newUser"  method="POST">
                 <g:hiddenField name="date" value="${game.date}" />
                 <table class="table table-bordered">
@@ -35,12 +33,11 @@
                         for(int j in 1..22){
                             if(j == 1){%>
                                 <td>
-                                    <g:textField class = "name-text-field" name="users[${i}].name" value="${game.users?.get(i)?.name}" />
+                                    <span> ${game.users?.get(i)?.name} </span>
                                 </td>
                             <%} else if(j == 22) {%>
                                 <td>
-                                    <g:select name="users[${i}].frames[9].rollThree"
-                                    from="${0..10}" value="${game?.users[i]?.frames?.get(9)?.rollThree}" />
+                                    <span> ${game?.users[i]?.frames?.get(9)?.rollThree} </span>
                                 </td>
                             <%} else {
                                 def value
@@ -53,8 +50,7 @@
                                 }
                                 %>
                                 <td>
-                                    <g:select name="users[${i}].frames[${frameNumber}].${j%2==0?"rollOne":"rollTwo"}"
-                                    from="${0..10}" value="${value}" />
+                                    <span>${value}</span>
                                 </td>
                             <%}
                         }
@@ -64,8 +60,6 @@
                 <%if(flash.error != null) {%>
                     <div> <h2 class="error">Error: ${flash.error}</h2></div>
                 <%}%>
-                <g:submitButton name="create" class="btn btn-primary" value="New User" />
-                <g:actionSubmit action="saveGame" class="btn btn-primary" value="Save" />
             </g:form>
         </div>
     </body>

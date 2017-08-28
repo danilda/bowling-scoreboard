@@ -9,8 +9,8 @@ input[type="text"].name-text-field {
 .head-row td{
     text-align: center;
 }
-td {
-    padding: 0px;
+table.table tr td {
+    padding: 4px;
 }
 table.table, tr{
     width: 90%;

@@ -30,14 +30,14 @@ class IntegrationGameServiceSpec extends Specification {
             CommandUser commandUser = new CommandUser(name: name)
             commandUser.frames = new ArrayList<>()
             for(int i in 0..9){
-                commandUser.frames.add(new CommandFrame(rollOne: rollsOne[i], rollTwo: rollsTwo[i], rollThree: rollsThree[i]))
+                commandUser.frames.add(new CommandFrame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i], rollThree: rollsThree[i]))
             }
             SimpleDateFormat sdf = new SimpleDateFormat(GameService.DATE_FORMAT)
             CommandGame commandGame = new CommandGame(date: sdf.format(new Date(time)))
             commandGame.users = new ArrayList<>(1)
             commandGame.users.add(commandUser)
 
-            Game game = gameService.saveGameFromCommandGame(commandGame)
+            Game game = gameService.saveGameByCommandGame(commandGame)
             game.save()
             def gameId = game.getId()
             def testGame = Game.get(gameId)
