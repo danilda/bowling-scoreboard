@@ -10,12 +10,13 @@ class Frame {
     static belongsTo = [user: User]
     static constraints = {
         number range: 0..9
-        score range: 0..300
-        score range: 0..300
-        rollOne range: 0..10
-        rollTwo range: 0..10, validator: {
+        score range: 0..300, nullable: true
+        rollOne range: 0..10, nullable: true
+        rollTwo range: 0..10, nullable: true, validator: {
             val, obj ->
-                if((val + obj.rollOne) <= 10){
+                def a = val?:0
+                def b = obj.rollOne?:0
+                if((a + b) <= 10){
                     return true
                 } else if(obj.number == 9 && obj.rollOne == 10 && (val + obj.rollOne) <= 20){
                     return true
@@ -24,9 +25,11 @@ class Frame {
         }
         rollThree nullable: true, range: 0..10, validator: {
             val, obj ->
-                if(obj.number == 9 && (obj.rollOne + obj.rollTwo) >= 10 && val != null){
+                def a = obj.rollOne?:0
+                def b = obj.rollTwo?:0
+                if(obj.number == 9 && (a + b) >= 10 && val != null){
                     return true
-                } else if((obj.number != 9 || (obj.rollOne + obj.rollTwo) < 10) && val == null){
+                } else if((obj.number != 9 || (a + b) < 10) && val == null){
                     return true
                 }
                 false

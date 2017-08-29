@@ -1,5 +1,6 @@
 package bowling.scoreboard
 
+import exception.FramesValidationException
 import grails.test.hibernate.HibernateSpec
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
@@ -12,16 +13,18 @@ class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreSer
     def cleanup() {
     }
 
-    List<Class> getDomainClasses() { [Frame] }
+    List<Class> getDomainClasses() { [Frame, User] }
 
     void "calculateFrames"() {
         when:
+            User user = new User()
             def testFrames = []
             for(i in 0..8){
-                testFrames.add new Frame(number: i, rollOne: 10, rollTwo: 0)
+                user.addToFrames new Frame(number: i, rollOne: 10, rollTwo: 0)
             }
-            testFrames.add new Frame(number: 9, rollOne: 10, rollTwo: 10, rollThree: 10)
-            service.calculateFrames testFrames
+            user.addToFrames  new Frame(number: 9, rollOne: 10, rollTwo: 10, rollThree: 10)
+            service.calculateFrames user
+            testFrames = service.getSortedValidListOfFramesFromUser user
         then:
             testFrames.get(0).score == 30
             testFrames.get(1).score == 60
@@ -34,14 +37,16 @@ class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreSer
             testFrames.get(8).score == 270
             testFrames.get(9).score == 300
         when:
+            user = new User()
             testFrames = []
             def rollsOne = [10, 10, 10, 7, 8, 0, 10, 7, 9, 10]
             def rollsTwo = [0, 0, 0, 2, 2, 9, 0, 3, 0, 10]
             def rollsThree = [null, null, null, null, null, null, null, null, null, 8]
             for(i in 0..9) {
-                testFrames.add new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i], rollThree: rollsThree[i])
+                user.addToFrames new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i], rollThree: rollsThree[i])
             }
-            service.calculateFrames testFrames
+            service.calculateFrames user
+            testFrames = service.getSortedValidListOfFramesFromUser user
         then:
             testFrames.get(0).score == 30
             testFrames.get(1).score == 57

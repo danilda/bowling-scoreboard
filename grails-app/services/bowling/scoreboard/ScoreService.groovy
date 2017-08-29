@@ -6,35 +6,41 @@ import grails.gorm.transactions.Transactional
 
 @Transactional
 class ScoreService {
-    public static FIRS_FRAME = 0
-    public static LAST_FRAME = 9
+    public static final FIRS_FRAME = 0
+    public static final LAST_FRAME = 9
+    public static final MAX_NUMBER_OF_USERS = 6
+    public static final MAX_NUMBER_OF_FRAMES = 10
 
-    static isStrike(Frame frame) throws FramesValidationException {
-        if (!frame.validate(['rollOne'])) {
-            throw new FramesValidationException()
-        }
-        frame.rollOne == 10
+    static isStrike(Frame frame) {
+        frame?.rollOne == 10
     }
 
-    static isSpare(Frame frame) throws FramesValidationException {
-        if (!frame.validate(['rollOne', 'rollTwo'])) {
-            throw new FramesValidationException()
+    static isSpare(Frame frame) {
+        if(frame.rollOne != null && frame.rollTwo != null) {
+            return  (frame.rollOne + frame.rollTwo) == 10
         }
-        (frame.rollOne + frame.rollTwo) == 10
+        false
     }
 
-    def calculateFrames(List<Frame> frames) throws FramesValidationException {
-        preprocessFramesForCalculation frames
-        def score
-        for (i in FIRS_FRAME..LAST_FRAME) {
-            if (isStrike(frames[i])) {
-                score = calculateStrike(frames, i)
-            } else if (isSpare(frames[i])) {
-                score = calculateSpare(frames, i)
-            } else {
-                score = calculateOther(frames, i)
+    static getSortedValidListOfFramesFromUser(User user) {
+        List<Frame> list = user.getFrames().toList().sort { current, next -> current.number <=> next.number }
+        list.each {
+            if (!it.validate(['number', 'rollOne', 'rollTwo', 'rollThree'])) {
+                throw new FramesValidationException("Exception in " + it.toString())
             }
-            if(i != FIRS_FRAME){
+        }
+        list
+    }
+
+    def calculateFrames(User user) throws FramesValidationException {
+        List<Frame> frames = getSortedValidListOfFramesFromUser(user)
+
+        for (Frame frame: frames) {
+            frame.setScore(0)
+        }
+        for (int i in 0..frames.size()-1) {
+            int score = calculateOneFrame(frames, i)
+            if (i != FIRS_FRAME) {
                 frames[i].score = frames[i - 1].score + score
             } else {
                 frames[i].score = score
@@ -42,42 +48,40 @@ class ScoreService {
         }
     }
 
-    def preprocessFramesForCalculation(List<Frame> frames) throws FramesValidationException {
-        frames.sort { current, next -> current.number <=> next.number }
-        frames.each {
-            if (it.validate(["rollOne", "rollTwo", "rollThree", "number"])) {
-
-            } else {
-                StringBuilder sb = new StringBuilder()
-                it.errors.allErrors.each {
-                    sb.append(it).append("\n")
-                }
-                throw new FramesValidationException(sb.toString())
-            }
+    private calculateOneFrame(List<Frame> frames, int i){
+        def rollOne = frames[i].rollOne?:0
+        def rollTwo = frames[i].rollTwo?:0
+        def additionalScores = 0
+        if (isStrike(frames[i])) {
+            additionalScores = calculateStrike(frames, i)
+        } else if (isSpare(frames[i])) {
+            additionalScores = calculateSpare(frames, i)
         }
+        return rollOne + rollTwo + additionalScores
     }
 
     private calculateStrike(List<Frame> frames, int i) {
+        def nextFrameRollOne = frames[i + 1]?.rollOne?:0
+        def nextFrameRollTwo = frames[i + 1]?.rollTwo?:0
+        def throughOneFrameRollOne = frames[i + 2]?.rollOne?:0
         if (i != LAST_FRAME) {
             if (isStrike(frames[i + 1])) {
-                if(i+2 > LAST_FRAME){
-                    return frames[i].rollOne + frames[i + 1].rollOne + frames[i + 1].rollTwo
+                if (i + 2 > LAST_FRAME) {
+                    return nextFrameRollOne + nextFrameRollTwo
                 }
-                return frames[i].rollOne + frames[i + 1].rollOne + frames[i + 2].rollOne
+                return nextFrameRollOne + throughOneFrameRollOne
             }
-            return  frames[i].rollOne + frames[i + 1].rollOne + frames[i + 1].rollTwo
+            return nextFrameRollOne + nextFrameRollTwo
         }
-        return frames[i].rollOne + frames[i].rollTwo + frames[i].rollThree
+        return  frames[i].rollThree
     }
 
     private calculateSpare(List<Frame> frames, int i) {
+        def nextFrameRollOne = frames[i + 1]?.rollOne?:0
         if (i != LAST_FRAME) {
-            return frames[i].rollOne + frames[i].rollTwo + frames[i + 1].rollOne
+            return nextFrameRollOne
         }
-        return frames[i].rollOne + frames[i].rollTwo + frames[i].rollThree
+        return frames[i].rollThree
     }
 
-    private calculateOther(List<Frame> frames, int i) {
-        return frames[i].rollOne + frames[i].rollTwo
-    }
 }

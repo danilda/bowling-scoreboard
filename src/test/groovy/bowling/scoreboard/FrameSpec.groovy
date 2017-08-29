@@ -13,7 +13,7 @@ class FrameSpec extends Specification implements DomainUnitTest<Frame> {
 
     void "Test of constraint of number"() {
         when: "Test range 1"
-            domain.number = 1
+            domain.setNumber(1)
 
         then:
             domain.validate(['number'])
@@ -65,7 +65,7 @@ class FrameSpec extends Specification implements DomainUnitTest<Frame> {
             domain.rollOne = null
 
         then:
-            !domain.validate(['rollOne'])
+            domain.validate(['rollOne'])
     }
 
     void "Test of constraint of rollTwo"() {
@@ -99,7 +99,7 @@ class FrameSpec extends Specification implements DomainUnitTest<Frame> {
             domain.rollTwo = null
 
         then:
-            !domain.validate(['rollTwo'])
+            domain.validate(['rollTwo'])
 
         when: "Test validator 1"
             domain.rollOne = 5
@@ -198,4 +198,5 @@ class FrameSpec extends Specification implements DomainUnitTest<Frame> {
         then:
             !domain.validate(['rollThree'])
     }
+
 }

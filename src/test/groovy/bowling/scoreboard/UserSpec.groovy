@@ -38,7 +38,7 @@ class UserSpec extends Specification implements DomainUnitTest<User> {
             }
             domain.frames = testFrames
         then:"fix me"
-            !domain.validate(['frames'])
+            domain.validate(['frames'])
 
         when:
             testFrames = new LinkedHashSet()
