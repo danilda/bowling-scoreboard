@@ -34,7 +34,6 @@ class ScoreService {
 
     def calculateFrames(User user) throws FramesValidationException {
         List<Frame> frames = getSortedValidListOfFramesFromUser(user)
-
         for (Frame frame: frames) {
             frame.setScore(0)
         }

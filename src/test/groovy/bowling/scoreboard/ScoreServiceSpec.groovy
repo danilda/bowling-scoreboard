@@ -1,9 +1,7 @@
 package bowling.scoreboard
 
-import exception.FramesValidationException
 import grails.test.hibernate.HibernateSpec
 import grails.testing.services.ServiceUnitTest
-import spock.lang.Specification
 
 class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreService>{
 
@@ -58,5 +56,22 @@ class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreSer
             testFrames.get(7).score == 143
             testFrames.get(8).score == 152
             testFrames.get(9).score == 180
+        when:
+            user = new User()
+            testFrames = []
+            rollsOne = [10, 8, 10, 7]
+            rollsTwo = [0, 0, 0, 2]
+            rollsThree = [null, null, null, null]
+            for(i in 0..3) {
+                user.addToFrames new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i], rollThree: rollsThree[i])
+            }
+            service.calculateFrames user
+            testFrames = service.getSortedValidListOfFramesFromUser user
+        then:
+            testFrames.get(0).score == 18
+            testFrames.get(1).score == 26
+            testFrames.get(2).score == 45
+            testFrames.get(3).score == 54
+
     }
 }
