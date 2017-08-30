@@ -3,6 +3,8 @@ package bowling.scoreboard
 import commandObject.CommandFrame
 import commandObject.CommandGame
 import commandObject.CommandUser
+import commandObject.Roll
+
 import static GameService.DATE_FORMAT
 
 import java.text.SimpleDateFormat
@@ -12,7 +14,30 @@ class MainController {
     ScoreService scoreService
 
     def test() {
-
+        Game game = new Game()
+        User user = new User(name: "test", number: 0)
+        def rollsOne = [2, 5, 10, 4, 8, 5]
+        def rollsTwo = [8, 0, 0, 5, 0, 5]
+        for(i in 0..rollsOne.size()-1){
+            user.addToFrames(new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i]))
+        }
+        User user2 = new User(name: "test2", number: 1)
+        rollsOne = [2, 5, 10, 4, 8, 2]
+        rollsTwo = [8, 0, 0, 5, 0, null]
+        for(i in 0..rollsOne.size()-1){
+            user2.addToFrames(new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i]))
+        }
+        User user3 = new User(name: "test3", number: 2)
+        rollsOne = [2, 5, 10, 4, 8]
+        rollsTwo = [8, 0, 0, 5, 0]
+        for(i in 0..rollsOne.size()-1){
+            user3.addToFrames(new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i]))
+        }
+        game.addToUsers(user)
+        game.addToUsers(user2)
+        game.addToUsers(user3)
+        Roll roll = gameService.getNextStep(game)
+        println roll
         render "test gsp"
     }
 

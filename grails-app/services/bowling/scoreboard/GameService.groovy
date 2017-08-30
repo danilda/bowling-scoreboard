@@ -55,10 +55,12 @@ class GameService {
 
     def getNextStep(Game game) {
         if (isGameEnded(game)) {
+            println "isGameEnded"
             return null
         }
-
-        getNextRoll(game) << [gameId: game.getId()]
+        Roll roll = getNextRoll(game)
+        roll.setGameId(game?.getId())
+        roll
     }
 
     private getNextRoll(Game game) {
@@ -73,8 +75,8 @@ class GameService {
             return new Roll(userNumber: 0, frameNumber: getLastUserFrame(users[0]).getNumber(), rollNumber: 0)
         } else {
             Roll roll = new Roll(userNumber: users.size()-1)
-            roll.properties << [frameNumber: getLastUserFrame(lastUser).getNumber()]
-            roll.properties << [rollNumber: getRollNumberForNotEndedFrame(getLastUserFrame(lastUser))]
+            roll.setFrameNumber(getLastUserFrame(lastUser).getNumber())
+            roll.setRollNumber(getRollNumberForNotEndedFrame(getLastUserFrame(lastUser)))
             return roll
         }
     }
@@ -85,32 +87,36 @@ class GameService {
             return new Roll(userNumber: users[i + 1].getNumber(), frameNumber: lastFrame.number, rollNumber: 0)
         }
         def roll = new Roll(userNumber: users[i].getNumber(), frameNumber: lastFrame.number)
-        roll << [rollNumber:getRollNumberForNotEndedFrame(lastFrame)]
+        roll.setRollNumber(getRollNumberForNotEndedFrame(lastFrame))
         return roll
     }
 
     private getRollNumberForNotEndedFrame(Frame frame){
         if (frame.rollOne == null) {
-            return [rollNumber: 0]
+            return 0
         } else if (frame.rollTwo == null) {
-            return [rollNumber: 1]
+            return 1
         } else {
-            return [rollNumber: 2]
+            return 2
         }
     }
 
     def isGameEnded(Game game) {
+        def result = true
         game.getUsers().each { user ->
+            println user.getFrames().size()
             if (user.getFrames().size() != 10) {
-                return false
+                println "isGameEnded - return false"
+                result = false
             }
             user.getFrames().each { frame ->
                 if (frame.number == 9 && frame.rollOne == null) {
-                    return false
+                    println "isGameEnded - return false"
+                    result = false
                 }
             }
         }
-        true
+        result
     }
 
     def isFrameEnded(Frame frame) {
