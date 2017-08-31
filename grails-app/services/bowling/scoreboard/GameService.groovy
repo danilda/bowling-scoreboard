@@ -6,7 +6,7 @@ import commandObject.Roll
 
 @Transactional
 class GameService {
-//    public static final DATE_FORMAT = "MMM d, yyyy HH:mm:ss SSS"
+    public static final DATE_FORMAT = "MMM d, yyyy HH:mm:ss SSS"
     Closure sortByNumber = { current, next -> current.number <=> next.number }
     ScoreService scoreService
 

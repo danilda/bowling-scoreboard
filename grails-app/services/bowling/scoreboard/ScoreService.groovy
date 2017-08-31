@@ -1,6 +1,5 @@
 package bowling.scoreboard
 
-import exception.DateValidationException
 import exception.FramesValidationException
 import grails.gorm.transactions.Transactional
 
