@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 class ParseToDomain {
 
     ScoreService scoreService
-
+/*
     Game commandGameInGame(CommandGame commandGame) {
         DateFormat dateFormat = new SimpleDateFormat()
         Game game = new Game(date: dateFormat.parse(commandGame.date))
@@ -60,5 +60,5 @@ class ParseToDomain {
         frame.rollThree = Integer.valueOf(commandFrame.rollThree)
         frame
     }
-
+*/
 }
