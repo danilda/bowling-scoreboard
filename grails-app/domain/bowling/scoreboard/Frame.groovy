@@ -35,4 +35,19 @@ class Frame {
                 false
         }
     }
+
+
+    @Override
+    String toString() {
+        return "Frame{" +
+                "id=" + id +
+                ", version=" + version +
+                ", user=" + user +
+                ", number=" + number +
+                ", rollOne=" + rollOne +
+                ", rollTwo=" + rollTwo +
+                ", rollThree=" + rollThree +
+                ", score=" + score +
+                '}'
+    }
 }

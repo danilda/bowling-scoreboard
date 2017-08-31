@@ -16,13 +16,12 @@ class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreSer
     void "calculateFrames"() {
         when:
             User user = new User()
-            def testFrames = []
             for(i in 0..8){
                 user.addToFrames new Frame(number: i, rollOne: 10, rollTwo: 0)
             }
             user.addToFrames  new Frame(number: 9, rollOne: 10, rollTwo: 10, rollThree: 10)
             service.calculateFrames user
-            testFrames = service.getSortedValidListOfFramesFromUser user
+            def testFrames = service.getSortedValidListOfFramesFromUser user
         then:
             testFrames.get(0).score == 30
             testFrames.get(1).score == 60
@@ -36,7 +35,6 @@ class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreSer
             testFrames.get(9).score == 300
         when:
             user = new User()
-            testFrames = []
             def rollsOne = [10, 10, 10, 7, 8, 0, 10, 7, 9, 10]
             def rollsTwo = [0, 0, 0, 2, 2, 9, 0, 3, 0, 10]
             def rollsThree = [null, null, null, null, null, null, null, null, null, 8]
@@ -58,7 +56,6 @@ class ScoreServiceSpec extends HibernateSpec implements ServiceUnitTest<ScoreSer
             testFrames.get(9).score == 180
         when:
             user = new User()
-            testFrames = []
             rollsOne = [10, 8, 10, 7]
             rollsTwo = [0, 0, 0, 2]
             rollsThree = [null, null, null, null]

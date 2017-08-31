@@ -25,6 +25,7 @@ class ScoreService {
         List<Frame> list = user.getFrames().toList().sort { current, next -> current.number <=> next.number }
         list.each {
             if (!it.validate(['number', 'rollOne', 'rollTwo', 'rollThree'])) {
+                println it.errors.each {it.toString()}
                 throw new FramesValidationException("Exception in " + it.toString())
             }
         }

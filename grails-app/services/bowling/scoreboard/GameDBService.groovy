@@ -34,11 +34,11 @@ class GameDBService {
             user.addToFrames(new Frame(number: roll.getFrameNumber(), rollOne: roll.getValue()))
         } else {
             List frames = user.getFrames().toList().sort { current, next -> current.number <=> next.number }
-            currentFrame = frames[(int) roll.getFrameNumber()]
+            def currentFrame = frames[(int) roll.getFrameNumber()]
             if (roll.getRollNumber() == 1) {
-                currentFrame.setRollOne(roll.getValue())
-            } else {
                 currentFrame.setRollTwo(roll.getValue())
+            } else {
+                currentFrame.setRollThree(roll.getValue())
             }
         }
 

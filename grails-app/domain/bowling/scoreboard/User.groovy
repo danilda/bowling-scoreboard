@@ -12,11 +12,14 @@ class User {
         number range: 0..5
         frames nullable: true, validator: {
             val, obj ->
-                Set<Integer> set = new HashSet()
-                val.each {
-                    set.add(it.getNumber())
+                if(val != null) {
+                    Set<Integer> set = new HashSet()
+                    val.each {
+                        set.add(it.getNumber())
+                    }
+                    return set.size() == val.size() && val.size() <= MAX_NUMBER_OF_FRAMES
                 }
-                set.size() == val.size()&& val.size() <= MAX_NUMBER_OF_FRAMES
+                true
         }
     }
 }
