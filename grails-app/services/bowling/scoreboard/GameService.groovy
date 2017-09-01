@@ -18,18 +18,20 @@ class GameService {
 
     private getUserListForRendering(Game game) {
         List<User> users = game.getUsers().toList().sort SORT_BY_NUMBER
-        List<List> resultUserList = new LinkedList<>()
+        List<Map> resultUserList = new LinkedList<>()
         users.each { user ->
-            resultUserList.add(getFrameListFromUser(user))
+            resultUserList.add([name:user.getName(), frames:getFrameListFromUser(user)])
         }
         resultUserList
     }
 
     private getFrameListFromUser(User user) {
-        List<Frame> frames = user.frames.toList().sort SORT_BY_NUMBER
         List<Map> resultFrameList = new LinkedList<>()
-        frames.each { frame ->
-            resultFrameList.add(getRollMapFromFrame(frame))
+        if(user.frames != null){
+            List<Frame> frames = user.frames.toList().sort SORT_BY_NUMBER
+            frames.each { frame ->
+                resultFrameList.add(getRollMapFromFrame(frame))
+            }
         }
         resultFrameList
     }
@@ -64,8 +66,16 @@ class GameService {
 
     private getNextRoll(Game game) {
         List users = game.getUsers().toList().sort SORT_BY_NUMBER
+        users.each { println it}
+        for (i in 0..<users.size()) {
+            if (users[i].getFrames() == null){
+                println users[i]
+                return new Roll(userNumber: i, frameNumber: 0, rollNumber: 0)
+            }
+        }
+
         for (i in 0..users.size() - 2) {
-            if (users[i].getFrames().size() > users[i + 1].getFrames().size()) {
+            if (users[i].getFrames()?.size() > users[i + 1].getFrames()?.size()) {
                 return getRollFromFramesWithDifferenceSize(users, i)
             }
         }
@@ -103,7 +113,7 @@ class GameService {
     def isGameEnded(Game game) {
         def result = true
         game.getUsers().each { user ->
-            if (user.getFrames().size() != 10) {
+            if (user.getFrames()?.size() != 10) {
                 result = false
             }
             user.getFrames().each { frame ->
@@ -123,6 +133,9 @@ class GameService {
     }
 
     def getLastUserFrame (User user){
-        return user.getFrames().sort(SORT_BY_NUMBER).get(user.getFrames().size() - 1)
+        if(user.getFrames() != null){
+            return user.getFrames().sort(SORT_BY_NUMBER).get(user.getFrames()?.size() - 1)
+        }
+        return null
     }
 }

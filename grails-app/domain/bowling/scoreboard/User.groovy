@@ -22,4 +22,12 @@ class User {
                 true
         }
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", number=" + number +
+                '}';
+    }
 }

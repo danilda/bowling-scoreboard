@@ -18,32 +18,47 @@ class MainController {
         render "test gsp"
     }
 
-    def addUser(List<String> userNames) {
-        if (userNames == null) {
-            userNames = []
-        } else if (userNames.size() == 6) {
+    def addUser(CommandUser users) {
+        if (users == null || users.getNames() == null) {
+            users = new CommandUser(names: [])
+        }
+        if (users.getNames().size() == 6) {
             flash.put("error", "Maximum number of players 6!")
         } else {
-            userNames.add("")
+            users.getNames().add("")
         }
-        render view: "addUser", model: [users: userNames]
+        render view: "addUser", model: [users: users]
     }
 
-    def addNewGame(ArrayList<String> userNames){
-        List<User> users = []
-        userNames.each {
-            users.add(new User(number: userNames.indexOf(it), name: it))
+    def addNewGame(CommandUser users){
+        //TODO добавить норм проверки
+        if(users.getNames().size() == 1 && users.getNames().get(0) == ""){
+            flash.put("error", "Please clarify name")
+            render view: "addUser", model: [users: users]
+            return
         }
-        Game game = gameDBService.addNewGame users
-        showGame game //заработает ли оно?
+
+        List<User> usersForSave = []
+        users.getNames().each {
+            usersForSave.add(new User(number: users.getNames().indexOf(it), name: it))
+        }
+        Game game = gameDBService.addNewGame usersForSave
+        showGame game
     }
 
     def showGame(Game game){
+        println "showGame, params: game - " + game
+        game.getUsers().each {
+            println it
+        }
         Map renderMap = gameService.getMapForRenderingFromGame game
-        render view: "showGame", model: renderMap
+        println gameService.getNextStep(game)
+        render view: "showGame", model: [renderMap: renderMap, nextRoll: gameService.getNextStep(game)]
     }
 
-    //каждый раз ли будет перезаписывать? TODO проверить
+    //каждый раз ли будет перезаписывать? TODO проверить - повторяется...
+    //как это обойти?
+
     def saveRoll(Roll roll){
         Game game = gameDBService.addRollInGame roll
         showGame game //заработает ли оно?

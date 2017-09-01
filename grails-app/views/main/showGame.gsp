@@ -3,64 +3,73 @@
         <title>Main Page</title>
     </head>
     <body>
-        <h2> New User  ${date} </h2>
         <div>
-            <g:form action="newUser"  method="POST">
-                <g:hiddenField name="date" value="${game.date}" />
+            <h1>Hello World</h1>
+            <h2>gameNumber = ${nextRoll.gameId} ,  userNumber = ${nextRoll.userNumber}, frameNumber = ${nextRoll.frameNumber}, rollNumber = ${nextRoll.rollNumber}</h2>
+            <g:form action="addUser"  method="POST">
+                <g:hiddenField name="roll.gameId" value="${nextRoll.gameId}" />
+                <g:hiddenField name="roll.userNumber" value="${nextRoll.userNumber}" />
+                <g:hiddenField name="roll.frameNumber" value="${nextRoll.frameNumber}" />
+                <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />
                 <table class="table table-bordered">
                     <tr class="head-row">
                         <td rowspan="2">Players Name</td>
-                        <%for(i in 1..10) {
-                            if(i == 10){%>
-                                <td colspan="3">Frame ${i} </td>
-                            <%} else {%>
-                                <td colspan="2">Frame ${i} </td>
-                           <%}
-                        }%>
+                        <g:each var="i" in="${ (1..10) }">
+                            <g:if test="${i == 10}">
+                                 <td colspan="3">Frame ${i} </td>
+                            </g:if>
+                            <g:else>
+                                 <td colspan="2">Frame ${i} </td>
+                            </g:else>
+                        </g:each>
                     </tr>
                     <tr class="head-row">
-
-                        <%for(i in 1..21) {
-                            if(i == 21){%>
-                        <td>Roll 3</td>
-                        <%} else {%>
-                        <td>Roll ${(i+1)%2 +1}</td>
-                        <%}
-                        }%>
+                        <g:each var="i" in="${ (1..21) }">
+                            <g:if test="${i == 21}">
+                                <td>Roll 3</td>
+                            </g:if>
+                            <g:else>
+                                 <td>Roll ${(i+1)%2 +1}</td>
+                            </g:else>
+                        </g:each>
                     </tr>
-                    <%for(int i = 0; i < game?.users.size()?: 0; i++){
-                        out << "<tr>"
-                        for(int j in 1..22){
-                            if(j == 1){%>
+                    <g:each status="i" in="${renderMap?.users}" var="user">
+                        <tr>
+                            <td>
+                                <span> ${user.name} </span>
+                            </td>
+
+                        <g:each status="j" in="${user.frames}" var="frame">
+                            <g:if test="${frame.rollOne != null}">
                                 <td>
-                                    <span> ${game.users?.get(i)?.name} </span>
+                                    <span> ${frame.rollOne} </span>
                                 </td>
-                            <%} else if(j == 22) {%>
+                            </g:if>
+                            <g:if test="${frame.rollTwo != 'null'}">
                                 <td>
-                                    <span> ${game?.users[i]?.frames?.get(9)?.rollThree} </span>
+                                    <span> ${frame.rollTwo} </span>
                                 </td>
-                            <%} else {
-                                def value
-                                int frameNumber = (j/2 - j%2/2) - 1
-                                def neededFrame = game?.users?.get(i)?.frames?.get(frameNumber)
-                                if(j%2==0){
-                                    value = neededFrame?.rollOne
-                                } else {
-                                    value = neededFrame?.rollTwo
-                                }
-                                %>
+                            </g:if>
+                            <g:if test="${j == 9 && frame.rollThree != null}">
                                 <td>
-                                    <span>${value}</span>
+                                    <span> ${frame.rollThree} </span>
                                 </td>
-                            <%}
-                        }
-                        out << "</tr>"
-                    }%>
+                            </g:if>
+                        </g:each>
+
+                        <g:if test="${nextRoll.userNumber == i}">
+                            <td>
+                                <g:select name="roll.value" from="${0..10}" />
+                            </td>
+                        </g:if>
+                        </tr>
+                    </g:each>
                 </table>
-                <%if(flash.error != null) {%>
-                    <div> <h2 class="error">Error: ${flash.error}</h2></div>
-                <%}%>
+                <g:actionSubmit value="Save Roll" class="btn btn-primary" action="saveRoll"/>
             </g:form>
+            <g:if test="${flash.error}">
+                 <h3>${flash.error}!</h3>
+            </g:if>
         </div>
     </body>
 </html>

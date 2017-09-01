@@ -29,11 +29,11 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
         game.addToUsers(user)
         Map renderMap = service.getMapForRenderingFromGame game
         then:
-        renderMap.users.get(0).get(0).rollOne == "2" && renderMap.users.get(0).get(0).rollTwo == "/"
-        renderMap.users.get(0).get(1).rollOne == "5" && renderMap.users.get(0).get(1).rollTwo == "-"
-        renderMap.users.get(0).get(2).rollOne == "X" && renderMap.users.get(0).get(2).rollTwo == ""
-        renderMap.users.get(0).get(3).rollOne == "4" && renderMap.users.get(0).get(3).rollTwo == "5"
-        renderMap.users.get(0).get(4).rollOne == "8" && renderMap.users.get(0).get(4).rollTwo == "-"
+        renderMap.users.get(0).frames.get(0).rollOne == "2" && renderMap.users.get(0).frames.get(0).rollTwo == "/"
+        renderMap.users.get(0).frames.get(1).rollOne == "5" && renderMap.users.get(0).frames.get(1).rollTwo == "-"
+        renderMap.users.get(0).frames.get(2).rollOne == "X" && renderMap.users.get(0).frames.get(2).rollTwo == ""
+        renderMap.users.get(0).frames.get(3).rollOne == "4" && renderMap.users.get(0).frames.get(3).rollTwo == "5"
+        renderMap.users.get(0).frames.get(4).rollOne == "8" && renderMap.users.get(0).frames.get(4).rollTwo == "-"
     }
 
     void "test next roll"() {
