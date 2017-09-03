@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <asset:stylesheet src="customStyles/indexStyle.css"/>
         <title>Main Page</title>
     </head>
     <body>
-        <h2> Hello World ${user.name}</h2>
-        <div>
-            <g:link controller="main" action="addUser">Create new game</g:link>
-        </div>
-        <div>
-            <g:link controller="main" action="showAllGames">Show all games</g:link>
+        <div class="middle main">
+            <h1 class="head"> Bowling Scoreboard </h1>
+            <h3>
+                <g:link controller="main" action="addUser">Create new game</g:link>
+            </h3>
+            <h3>
+                <g:link controller="main" action="showAllGames">Show all games</g:link>
+            </h3>
         </div>
     </body>
 </html>

@@ -1,12 +1,18 @@
 package commandObject
 
 
-class CommandUser implements grails.validation.Validateable{
+class UsersNames implements grails.validation.Validateable{
     List<String> names
 
     //TODO add constraints for all rules
     static constraints = {
-        names nullable: true
+        names nullable: false, validator: { val, obj ->
+            val.each {
+                if(it.isEmpty()|| it.size() > 15){
+                    return false
+                }
+            }
+        }
     }
 
     @Override

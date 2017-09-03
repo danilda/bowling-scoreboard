@@ -1,0 +1,40 @@
+body {
+    background-color: #ededed;
+    color: #ffffff;
+}
+
+h1 {
+   margin: 0px;
+}
+
+.middle {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.main {
+    width: 500px;
+    text-align: center;
+    margin-top: 100px;
+    background-color: #ffffff;
+}
+
+.head {
+    background-color: #2856b6;
+    height: 50px;
+    padding-top: 15px;
+}
+
+.main h3 {
+    margin: 0px;
+    padding: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #2856b6;
+}
+
+.main h3:hover a {
+    text-decoration: #2856b6 underline;
+}

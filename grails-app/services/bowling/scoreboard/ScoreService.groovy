@@ -7,16 +7,19 @@ import grails.gorm.transactions.Transactional
 class ScoreService {
     public static final FIRS_FRAME = 0
     public static final LAST_FRAME = 9
+    public static final FIRST_USER = 0
     public static final MAX_NUMBER_OF_USERS = 6
     public static final MAX_NUMBER_OF_FRAMES = 10
+    public static final ALL_BOWLS = 10
+
 
     static isStrike(Frame frame) {
-        frame?.rollOne == 10
+        frame?.rollOne == ALL_BOWLS
     }
 
     static isSpare(Frame frame) {
         if(frame.rollOne != null && frame.rollTwo != null) {
-            return  (frame.rollOne + frame.rollTwo) == 10
+            return  (frame.rollOne + frame.rollTwo) == ALL_BOWLS
         }
         false
     }
@@ -37,7 +40,7 @@ class ScoreService {
         for (Frame frame: frames) {
             frame.setScore(0)
         }
-        for (int i in 0..frames.size()-1) {
+        for (int i in FIRS_FRAME..frames.size()-1) {
             int score = calculateOneFrame(frames, i)
             if (i != FIRS_FRAME) {
                 frames[i].score = frames[i - 1].score + score
@@ -72,7 +75,8 @@ class ScoreService {
             }
             return nextFrameRollOne + nextFrameRollTwo
         }
-        return  frames[i].rollThree
+        def frameRollThree = frames[i].rollThree?:0
+        return  frameRollThree
     }
 
     private calculateSpare(List<Frame> frames, int i) {
@@ -80,7 +84,8 @@ class ScoreService {
         if (i != LAST_FRAME) {
             return nextFrameRollOne
         }
-        return frames[i].rollThree
+        def frameRollThree = frames[i].rollThree?:0
+        return frameRollThree
     }
 
 }

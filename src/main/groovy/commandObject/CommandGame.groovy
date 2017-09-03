@@ -5,7 +5,7 @@ package commandObject
  */
 class CommandGame implements grails.validation.Validateable {
     String date
-    List<CommandUser> users
+    List<UsersNames> users
 
     static constraints = {
         date nullable: true

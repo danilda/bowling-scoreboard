@@ -1,0 +1,14 @@
+.middle {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.nav {
+    width: 300px;
+    margin-top: 50px;
+}
+
+.main {
+    margin-top: 20px;
+    width: 200px;
+}

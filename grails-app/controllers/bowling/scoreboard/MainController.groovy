@@ -1,26 +1,20 @@
 package bowling.scoreboard
 
-import commandObject.CommandFrame
-import commandObject.CommandGame
-import commandObject.CommandUser
+
+import commandObject.UsersNames
 import commandObject.Roll
-
-import static GameService.DATE_FORMAT
-
-import java.text.SimpleDateFormat
 
 class MainController {
     GameService gameService
-    ScoreService scoreService
     GameDBService gameDBService
 
     def test() {
         render "test gsp"
     }
 
-    def addUser(CommandUser users) {
+    def addUser(UsersNames users) {
         if (users == null || users.getNames() == null) {
-            users = new CommandUser(names: [])
+            users = new UsersNames(names: [])
         }
         if (users.getNames().size() == 6) {
             flash.put("error", "Maximum number of players 6!")
@@ -30,9 +24,19 @@ class MainController {
         render view: "addUser", model: [users: users]
     }
 
-    def addNewGame(CommandUser users){
+    def removeUser(UsersNames users) {
+
+        if (users.getNames().size() == 1) {
+            flash.put("error", "There must be at least one player in the game")
+        } else {
+            users.getNames().remove(users.names.size()-1)
+        }
+        render view: "addUser", model: [users: users]
+    }
+
+    def addNewGame(UsersNames users) {
         //TODO добавить норм проверки
-        if(users.getNames().size() == 1 && users.getNames().get(0) == ""){
+        if (users.getNames().size() == 1 && users.getNames().get(0) == "") {
             flash.put("error", "Please clarify name")
             render view: "addUser", model: [users: users]
             return
@@ -43,32 +47,30 @@ class MainController {
             usersForSave.add(new User(number: users.getNames().indexOf(it), name: it))
         }
         Game game = gameDBService.addNewGame usersForSave
-        showGame game
+        redirect action: 'showGame', params: [id: game.id]
     }
 
-    def showGame(Game game){
-        println "showGame, params: game - " + game
+    def showGame(String id) {
+        println "showGame, params: game - " + id
+        def game = Game.get(id)
         game.getUsers().each {
             println it
         }
         Map renderMap = gameService.getMapForRenderingFromGame game
+        println renderMap
         println gameService.getNextStep(game)
         render view: "showGame", model: [renderMap: renderMap, nextRoll: gameService.getNextStep(game)]
     }
 
-    //каждый раз ли будет перезаписывать? TODO проверить - повторяется...
-    //как это обойти?
-
-    def saveRoll(Roll roll){
+    def saveRoll(Roll roll) {
+        println roll
         Game game = gameDBService.addRollInGame roll
-        showGame game //заработает ли оно?
+        redirect action: 'showGame', params: [id: game.id]
     }
 
     def index() {
         respond new User(name: "Danil")
     }
-
-
 
     /*
 
@@ -118,8 +120,8 @@ class MainController {
 
 
     private addNewUserInGame(CommandGame game) {
-        game.users.add(new CommandUser())
-        CommandUser user = game.users.get(game.users.size() - 1)
+        game.users.add(new UsersNames())
+        UsersNames user = game.users.get(game.users.size() - 1)
         user.frames = new ArrayList<>()
         for (i in 0..9) {
             user.frames.add(new CommandFrame(number: i))

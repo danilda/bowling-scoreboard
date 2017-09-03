@@ -5,12 +5,10 @@
     <body>
         <div>
             <h1>Hello World</h1>
-            <h2>gameNumber = ${nextRoll.gameId} ,  userNumber = ${nextRoll.userNumber}, frameNumber = ${nextRoll.frameNumber}, rollNumber = ${nextRoll.rollNumber}</h2>
-            <g:form action="addUser"  method="POST">
-                <g:hiddenField name="roll.gameId" value="${nextRoll.gameId}" />
-                <g:hiddenField name="roll.userNumber" value="${nextRoll.userNumber}" />
-                <g:hiddenField name="roll.frameNumber" value="${nextRoll.frameNumber}" />
-                <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />
+            <g:if test="${nextRoll}">
+                <h2>gameNumber = ${nextRoll.gameId} ,  userNumber = ${nextRoll.userNumber}, frameNumber = ${nextRoll.frameNumber}, rollNumber = ${nextRoll.rollNumber}</h2>
+            </g:if>
+            <g:form action="saveRoll"  method="POST">
                 <table class="table table-bordered">
                     <tr class="head-row">
                         <td rowspan="2">Players Name</td>
@@ -35,12 +33,12 @@
                     </tr>
                     <g:each status="i" in="${renderMap?.users}" var="user">
                         <tr>
-                            <td>
-                                <span> ${user.name} </span>
-                            </td>
+                        <td rowspan="2">
+                            <span> ${user.name} </span>
+                        </td>
 
                         <g:each status="j" in="${user.frames}" var="frame">
-                            <g:if test="${frame.rollOne != null}">
+                            <g:if test="${frame.rollOne != 'null'}">
                                 <td>
                                     <span> ${frame.rollOne} </span>
                                 </td>
@@ -50,18 +48,26 @@
                                     <span> ${frame.rollTwo} </span>
                                 </td>
                             </g:if>
-                            <g:if test="${j == 9 && frame.rollThree != null}">
+                            <g:if test="${j == 9 && frame.rollThree != 'null' && frame.rollThree != null}">
                                 <td>
                                     <span> ${frame.rollThree} </span>
                                 </td>
                             </g:if>
                         </g:each>
-
-                        <g:if test="${nextRoll.userNumber == i}">
+                        <g:if test="${nextRoll?.userNumber == i}">
+                            <g:hiddenField name="roll.gameId" value="${nextRoll.gameId}" />
+                            <g:hiddenField name="roll.userNumber" value="${nextRoll.userNumber}" />
+                            <g:hiddenField name="roll.frameNumber" value="${nextRoll.frameNumber}" />
+                            <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />
                             <td>
                                 <g:select name="roll.value" from="${0..10}" />
                             </td>
                         </g:if>
+                        </tr>
+                        <tr>
+                            <g:each status="j" in="${user.frames}" var="frame">
+                                <td colspan="${(j == 9)?3:2}">${frame.score} </td>
+                            </g:each>
                         </tr>
                     </g:each>
                 </table>

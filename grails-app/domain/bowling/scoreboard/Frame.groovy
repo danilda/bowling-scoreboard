@@ -27,12 +27,10 @@ class Frame {
             val, obj ->
                 def a = obj.rollOne?:0
                 def b = obj.rollTwo?:0
-                if(obj.number == 9 && (a + b) >= 10 && val != null){
-                    return true
-                } else if((obj.number != 9 || (a + b) < 10) && val == null){
-                    return true
+                if(val != null ) {
+                    return obj.number == 9 && ((a + b) >= 10 || val == 0)
                 }
-                false
+                return true
         }
     }
 

@@ -5,7 +5,7 @@ package commandObject
  */
 class Roll {
     Long gameId
-    Long userNumber
+    Integer userNumber
     Integer frameNumber
     Integer rollNumber
     Integer value
