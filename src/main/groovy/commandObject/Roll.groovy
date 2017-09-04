@@ -9,6 +9,7 @@ class Roll {
     Integer frameNumber
     Integer rollNumber
     Integer value
+    Integer maxValue
 
 
     @Override
@@ -19,6 +20,7 @@ class Roll {
                 ", frameNumber=" + frameNumber +
                 ", rollNumber=" + rollNumber +
                 ", value=" + value +
+                ", maxValue=" + maxValue +
                 '}';
     }
 }

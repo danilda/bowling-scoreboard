@@ -1,0 +1,45 @@
+body {
+    background-color: #ededed;
+    color: black;
+}
+
+.middle {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.clearfix {
+    content: "";
+    clear: both;
+    width: 100%;
+    display: table;
+}
+
+.main {
+    width: 500px;
+    margin-top: 100px;
+    background-color: #ffffff;
+}
+
+.main div {
+    float: left;
+}
+
+.item {
+    padding: 10px;
+    background-color: #ffffff;
+    width: 100%;
+}
+
+.game-id {
+    width: 100px;
+}
+
+.game-date {
+    width: 374px;
+    text-align: right;
+}
+
+.item:hover {
+    border: 2px solid #2856b6
+}

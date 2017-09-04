@@ -11,7 +11,7 @@
                 <g:link controller="main" action="addUser">Create new game</g:link>
             </h3>
             <h3>
-                <g:link controller="main" action="showAllGames">Show all games</g:link>
+                <g:link controller="main" action="showGameList">Show all games</g:link>
             </h3>
         </div>
     </body>

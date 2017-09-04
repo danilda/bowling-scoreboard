@@ -52,6 +52,7 @@ class MainController {
 
     def showGame(String id) {
         println "showGame, params: game - " + id
+        println  "needed user = " + User.findAllByGameAndNumber(Game.get(1), 0)[0]
         def game = Game.get(id)
         game.getUsers().each {
             println it
@@ -70,6 +71,11 @@ class MainController {
 
     def index() {
         respond new User(name: "Danil")
+    }
+
+    def showGameList(Integer max){
+
+        respond Game.list(params)
     }
 
     /*

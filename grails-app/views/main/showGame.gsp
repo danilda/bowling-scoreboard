@@ -13,22 +13,12 @@
                     <tr class="head-row">
                         <td rowspan="2">Players Name</td>
                         <g:each var="i" in="${ (1..10) }">
-                            <g:if test="${i == 10}">
-                                 <td colspan="3">Frame ${i} </td>
-                            </g:if>
-                            <g:else>
-                                 <td colspan="2">Frame ${i} </td>
-                            </g:else>
+                             <td colspan="${i == 10 ? 3 : 2}">Frame ${i} </td>
                         </g:each>
                     </tr>
                     <tr class="head-row">
                         <g:each var="i" in="${ (1..21) }">
-                            <g:if test="${i == 21}">
-                                <td>Roll 3</td>
-                            </g:if>
-                            <g:else>
-                                 <td>Roll ${(i+1)%2 +1}</td>
-                            </g:else>
+                                <td>Roll ${i == 21 ? 3 : (i+1)%2 +1}</td>
                         </g:each>
                     </tr>
                     <g:each status="i" in="${renderMap?.users}" var="user">
@@ -60,7 +50,7 @@
                             <g:hiddenField name="roll.frameNumber" value="${nextRoll.frameNumber}" />
                             <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />
                             <td>
-                                <g:select name="roll.value" from="${0..10}" />
+                                <g:select name="roll.value" from="${0..nextRoll.maxValue}" />
                             </td>
                         </g:if>
                         </tr>

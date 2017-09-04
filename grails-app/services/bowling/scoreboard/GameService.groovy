@@ -1,6 +1,6 @@
 package bowling.scoreboard
 
-
+import exception.DateValidationException
 import grails.gorm.transactions.Transactional
 import commandObject.Roll
 import static enums.RollsEnum.ROLL_ONE
@@ -107,12 +107,12 @@ class GameService {
         }
         Roll roll = getNextRoll(game)
         roll.setGameId(game?.getId())
+        calculateMaxValue(roll)
         roll
     }
 
     private getNextRoll(Game game) {
         List<User> users = game.getUsers().toList().sort SORT_BY_NUMBER
-        users.each { println it }
         if (!isAnyUserHasFrame(game)) {
             return new Roll(userNumber: FIRST_USER, frameNumber: FIRS_FRAME, rollNumber: ROLL_ONE.id)
         }
@@ -122,6 +122,7 @@ class GameService {
                 return getRollByProcessingNotLastUser(users, i)
             }
         }
+
         return getRollByProcessingLastUser(users)
     }
 
@@ -143,7 +144,7 @@ class GameService {
             return new Roll(userNumber: users[i + 1].getNumber(), frameNumber: lastFrame.number, rollNumber: ROLL_ONE.id)
         }
         def roll = new Roll(userNumber: users[i].getNumber(), frameNumber: lastFrame.number)
-        roll.setRollNumber(getRollNumberForNotEndedFrame(lastFrame))
+        roll.rollNumber = getRollNumberForNotEndedFrame(lastFrame)
         return roll
     }
 
@@ -163,11 +164,55 @@ class GameService {
 
     private getRollNumberForNotEndedFrame(Frame frame) {
         if (frame.rollOne == null) {
-            return ROLL_ONE
+            return ROLL_ONE.id
         } else if (frame.rollTwo == null) {
-            return ROLL_TWO
+            return ROLL_TWO.id
         } else {
-            return ROLL_THREE
+            return ROLL_THREE.id
+        }
+    }
+
+    private calculateMaxValue(Roll roll){
+        if(roll.rollNumber == ROLL_ONE.id){
+            roll.maxValue = ALL_BOWLS
+        } else {
+            calculateMaxValueForRollTwoAndThree(roll)
+        }
+    }
+
+    private calculateMaxValueForRollTwoAndThree(Roll roll){
+        Set<User> users = User.findAllByGameAndNumber(Game.read(roll.gameId), roll.userNumber)
+        if(users.size() > 1){
+            throw new DateValidationException("!!")
+        }
+        Frame frame = users[0].frames.toList().sort(SORT_BY_NUMBER)[roll.frameNumber]
+        if (roll.rollNumber == ROLL_TWO.id){
+            calculateMaxValueForRollTwo(frame, roll)
+        } else {
+            calculateMaxValueForRollThree(frame, roll)
+        }
+    }
+
+    private calculateMaxValueForRollTwo(Frame frame, Roll roll){
+        if(frame.number != LAST_FRAME){
+            roll.maxValue = ALL_BOWLS - frame.rollOne
+        } else {
+            if(ScoreService.isStrike(frame)){
+                roll.maxValue = ALL_BOWLS
+            } else {
+                roll.maxValue = ALL_BOWLS - frame.rollOne
+            }
+        }
+    }
+    private calculateMaxValueForRollThree(Frame frame, Roll roll){
+        if(ScoreService.isStrike(frame)){
+            if(frame.rollTwo == ALL_BOWLS){
+                roll.maxValue = ALL_BOWLS
+            } else {
+                roll.maxValue = ALL_BOWLS - frame.rollTwo
+            }
+        } else {
+            roll.maxValue = ALL_BOWLS
         }
     }
 
