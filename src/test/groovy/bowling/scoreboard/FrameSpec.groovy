@@ -177,14 +177,6 @@ class FrameSpec extends Specification implements DomainUnitTest<Frame> {
         when: "validator"
             domain.number = 9
             domain.rollOne = 5
-            domain.rollTwo = 5
-            domain.rollThree = null
-        then:
-            !domain.validate(['rollThree'])
-
-        when: "validator"
-            domain.number = 9
-            domain.rollOne = 5
             domain.rollTwo = 2
             domain.rollThree = null
         then:

@@ -107,7 +107,7 @@ class GameService {
         }
         Roll roll = getNextRoll(game)
         roll.setGameId(game?.getId())
-        calculateMaxValue(roll)
+        calculateMaxValue(game, roll)
         roll
     }
 
@@ -172,41 +172,39 @@ class GameService {
         }
     }
 
-    private calculateMaxValue(Roll roll){
-        if(roll.rollNumber == ROLL_ONE.id){
+    private calculateMaxValue(Game game, Roll roll) {
+        if (roll.rollNumber == ROLL_ONE.id) {
             roll.maxValue = ALL_BOWLS
         } else {
-            calculateMaxValueForRollTwoAndThree(roll)
+            calculateMaxValueForRollTwoAndThree(game, roll)
         }
     }
 
-    private calculateMaxValueForRollTwoAndThree(Roll roll){
-        Set<User> users = User.findAllByGameAndNumber(Game.read(roll.gameId), roll.userNumber)
-        if(users.size() > 1){
-            throw new DateValidationException("!!")
-        }
-        Frame frame = users[0].frames.toList().sort(SORT_BY_NUMBER)[roll.frameNumber]
-        if (roll.rollNumber == ROLL_TWO.id){
+    private calculateMaxValueForRollTwoAndThree(Game game, Roll roll) {
+        User user = game.users.toList().sort(SORT_BY_NUMBER).get(roll.userNumber)
+        Frame frame = user.frames.toList().sort(SORT_BY_NUMBER).get(roll.frameNumber)
+        if (roll.rollNumber == ROLL_TWO.id) {
             calculateMaxValueForRollTwo(frame, roll)
         } else {
             calculateMaxValueForRollThree(frame, roll)
         }
     }
 
-    private calculateMaxValueForRollTwo(Frame frame, Roll roll){
-        if(frame.number != LAST_FRAME){
+    private calculateMaxValueForRollTwo(Frame frame, Roll roll) {
+        if (frame.number != LAST_FRAME) {
             roll.maxValue = ALL_BOWLS - frame.rollOne
         } else {
-            if(ScoreService.isStrike(frame)){
+            if (ScoreService.isStrike(frame)) {
                 roll.maxValue = ALL_BOWLS
             } else {
                 roll.maxValue = ALL_BOWLS - frame.rollOne
             }
         }
     }
-    private calculateMaxValueForRollThree(Frame frame, Roll roll){
-        if(ScoreService.isStrike(frame)){
-            if(frame.rollTwo == ALL_BOWLS){
+
+    private calculateMaxValueForRollThree(Frame frame, Roll roll) {
+        if (ScoreService.isStrike(frame)) {
+            if (frame.rollTwo == ALL_BOWLS) {
                 roll.maxValue = ALL_BOWLS
             } else {
                 roll.maxValue = ALL_BOWLS - frame.rollTwo

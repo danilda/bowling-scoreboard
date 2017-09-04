@@ -15,9 +15,8 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
 
     List<Class> getDomainClasses() { [Frame, User, Game] }
 
-    //TODO переписать тест с использованием матрицы валидации
-    void "test render map"() {
-        when:
+    void "test render map (one user & not ended game)"() {
+        expect:
         Game game = new Game()
         User user = new User(name: "test", number: 0)
         def rollsOne = [2, 5, 10, 4, 8]
@@ -28,12 +27,63 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
         }
         game.addToUsers(user)
         Map renderMap = service.getMapForRenderingFromGame game
-        then:
-        renderMap.users.get(0).frames.get(0).rollOne == "2" && renderMap.users.get(0).frames.get(0).rollTwo == "/"
-        renderMap.users.get(0).frames.get(1).rollOne == "5" && renderMap.users.get(0).frames.get(1).rollTwo == "-"
-        renderMap.users.get(0).frames.get(2).rollOne == "X" && renderMap.users.get(0).frames.get(2).rollTwo == ""
-        renderMap.users.get(0).frames.get(3).rollOne == "4" && renderMap.users.get(0).frames.get(3).rollTwo == "5"
-        renderMap.users.get(0).frames.get(4).rollOne == "8" && renderMap.users.get(0).frames.get(4).rollTwo == "-"
+        println renderMap.users[0].frames[f].scores
+        renderMap.users[0].frames[f].rollOne == v1 && renderMap.users[0].frames[f].rollTwo == v2 && renderMap.users[0].frames[f].score == v3
+        where:
+        f|v1 |v2 |v3
+        0|"2"|"/"|15
+        1|"5"|"-"|20
+        2|"X"|"" |39
+        3|"4"|"5"|48
+        4|"8"|"-"|56
+    }
+
+    void "test render map (several users & ended game)"() {
+        expect:
+        Game game = new Game()
+        User user = new User(name: "test", number: 0)
+        def rollsOne = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+        def rollsTwo = [0, 0, 0, 0, 0, 0, 0, 0, 0, 10]
+        def rollsThree = [null, null, null, null, null, null, null, null, null, 10]
+        def scores = [30, 60, 90, 120, 150, 180, 210, 240, 270, 300]
+        for(i in 0..rollsOne.size()){
+            user.addToFrames(new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i], rollThree: rollsThree[i], score: scores[i]))
+        }
+        game.addToUsers(user)
+        def user2 = new User(name: "test2", number: 1)
+        def rollsOne2 = [10, 10, 10, 7, 8, 0, 10, 7, 9, 10]
+        def rollsTwo2 = [0, 0, 0, 2, 2, 9, 0, 3, 0, 10]
+        def rollsThree2 = [null, null, null, null, null, null, null, null, null, 8]
+        def scores2 = [30, 57, 76, 85, 95, 104, 124, 143, 152, 180]
+        for(i in 0..rollsOne2.size()){
+            user2.addToFrames(new Frame(number: i, rollOne: rollsOne2[i], rollTwo: rollsTwo2[i], rollThree: rollsThree2[i], score: scores2[i]))
+        }
+        game.addToUsers(user2)
+        Map renderMap = service.getMapForRenderingFromGame game
+        renderMap.users[u].frames[f].rollOne == v1 && renderMap.users[u].frames[f].rollTwo == v2 && renderMap.users[u].frames[f].score == v3
+        where:
+        u|f|v1 |v2 |v3
+        0|0|"X"|"" |30
+        0|1|"X"|"" |60
+        0|2|"X"|"" |90
+        0|3|"X"|"" |120
+        0|4|"X"|"" |150
+        0|5|"X"|"" |180
+        0|6|"X"|"" |210
+        0|7|"X"|"" |240
+        0|8|"X"|"" |270
+        0|9|"X"|"X" |300
+        1|0|"X"|"" |30
+        1|1|"X"|"" |57
+        1|2|"X"|"" |76
+        1|3|"7"|"2"|85
+        1|4|"8"|"/" |95
+        1|5|"-"|"9" |104
+        1|6|"X"|"" |124
+        1|7|"7"|"/" |143
+        1|8|"9"|"-" |152
+        1|9|"X"|"X" |180
+        //TODO Несколько таблиц в одном тесте?
     }
 
     void "test next roll"() {
