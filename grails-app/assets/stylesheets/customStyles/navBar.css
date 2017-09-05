@@ -1,0 +1,12 @@
+.nav-menu{
+    width: 400px;
+}
+.top{
+    background-color: #337ab7;
+}
+.nav a{
+    color: #ffffff ;
+}
+.nav > li > a:hover{
+    background-color: #286090;
+}

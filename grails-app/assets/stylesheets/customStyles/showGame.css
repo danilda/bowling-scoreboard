@@ -1,0 +1,28 @@
+body {
+    background-color: #ededed;
+   /* color: #337ab7;*/
+}
+table.table td{
+    background-color: #ffffff;
+}
+.head-row td{
+    text-align: center;
+}
+
+.table > tbody > tr > td {
+    padding: 4px;
+    min-width:60px;
+}
+table.table, tr{
+    width: 700px;
+}
+.middle {
+    margin-right: auto;
+    margin-left: auto;
+}
+.main{
+    width: 1100px;
+}
+.game, .save-roll {
+    margin: 20px;
+}

@@ -1,12 +1,14 @@
 <html>
     <head>
         <title>Main Page</title>
-        <asset:stylesheet src="customStyles/addUserStyle.css"/>
+
         <asset:stylesheet src="bootstrap.css"/>
+        <asset:stylesheet src="customStyles/navBar.css"/>
+        <asset:stylesheet src="customStyles/showGame.css"/>
     </head>
     <body>
         <div>
-            <div class="navbar navbar-static-top">
+            <div class="navbar navbar-static-top top">
                 <div class="collapse navbar-collapse" id="responsive-menu">
                     <ul class="nav navbar-nav">
                         <li><g:link controller="scoreboard" action="index">Main menu</g:link></li>
@@ -15,20 +17,16 @@
                 </div>
             </div>
         </div>
-
-            <h1>Hello World</h1>
-            <g:if test="${nextRoll}">
-                <h2>Game id = ${nextRoll.game} </h2>
-            </g:if>
-            <g:form action="saveRoll"  method="POST">
-                <table class="table table-bordered">
-                    <tr class="head-row">
+            <h2 class="game">Game id = ${renderMap.game} </h2>
+            <g:form action="saveRoll" method="POST">
+                <table class="table table-bordered middle">
+                    <tr class="head-row info">
                         <td rowspan="2">Players Name</td>
                         <g:each var="i" in="${ (1..10) }">
                              <td colspan="${i == 10 ? 3 : 2}">Frame ${i} </td>
                         </g:each>
                     </tr>
-                    <tr class="head-row">
+                    <tr class="head-row info">
                         <g:each var="i" in="${ (1..21) }">
                                 <td>Roll ${i == 21 ? 3 : (i+1)%2 +1}</td>
                         </g:each>
@@ -73,11 +71,10 @@
                         </tr>
                     </g:each>
                 </table>
-                <g:actionSubmit value="Save Roll" class="btn btn-primary" action="saveRoll"/>
+                <g:if test="${nextRoll != null}">
+                    <g:actionSubmit value="Save Roll" class="btn btn-primary save-roll" action="saveRoll"/>
+                </g:if>
             </g:form>
-            <g:if test="${flash.error}">
-                 <h3>${flash.error}!</h3>
-            </g:if>
         </div>
     </body>
 </html>

@@ -1,9 +1,14 @@
+body {
+    background-color: #ededed;
+    color: #337ab7;
+}
+
 .middle {
     margin-right: auto;
     margin-left: auto;
 }
 
-.nav {
+.game-buttons {
     width: 300px;
     margin-top: 50px;
 }
@@ -12,19 +17,3 @@
     margin-top: 20px;
     width: 200px;
 }
-
-.nav-menu{
-    width: 400px;
-}
-.top{
-    background-color: #337ab7;
-}
-.nav a{
-    color: #ffffff ;
-}
-li:hover{
-    background-color: #286090 ;
-}
-/*!*.navbar-nav {*! #337ab7*/
-    /*background-color: #2856b6;*/
-/*}*/

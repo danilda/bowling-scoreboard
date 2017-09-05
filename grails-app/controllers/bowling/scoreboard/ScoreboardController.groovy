@@ -3,12 +3,12 @@ package bowling.scoreboard
 import commandObject.RollCommand
 import commandObject.UsersNamesCommand
 
+
 import static org.springframework.http.HttpStatus.NOT_FOUND
 
 class ScoreboardController {
     GameService gameService
     GameDBService gameDBService
-
 
     def addUser(UsersNamesCommand users) {
         if (users == null || users.getNames() == null) {
@@ -33,7 +33,7 @@ class ScoreboardController {
 
     def addNewGame(UsersNamesCommand users) {
         if (users.hasErrors()) {
-            respond users.errors , view:'addUser', model:[users: users]
+            respond users.errors, view:'addUser', model:[users: users, error: true]
             return
         }
         List<User> usersForSave = []
@@ -45,7 +45,7 @@ class ScoreboardController {
     }
 
     def showGame(String id) {
-        def game = Game.get(id)
+        Game game = Game.get(id)
         if (!game){
             render status: NOT_FOUND
         }

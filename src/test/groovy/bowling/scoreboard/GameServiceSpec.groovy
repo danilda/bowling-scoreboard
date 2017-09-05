@@ -25,7 +25,7 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
             user.addToFrames(new Frame(number: i, rollOne: rollsOne[i], rollTwo: rollsTwo[i], score: scores[i]))
         }
         game.addToUsers(user)
-        Map renderMap = service.getMapForRenderingFromGame game
+        Map renderMap = service.getModelForRendering game
         renderMap.users[0].frames[f].rollOne == v1 && renderMap.users[0].frames[f].rollTwo == v2 && renderMap.users[0].frames[f].score == v3
         where:
         f|v1 |v2 |v3
@@ -57,7 +57,7 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
             user2.addToFrames(new Frame(number: i, rollOne: rollsOne2[i], rollTwo: rollsTwo2[i], rollThree: rollsThree2[i], score: scores2[i]))
         }
         game.addToUsers(user2)
-        Map renderMap = service.getMapForRenderingFromGame game
+        Map renderMap = service.getModelForRendering game
         renderMap.users[u].frames[f].rollOne == v1 && renderMap.users[u].frames[f].rollTwo == v2 && renderMap.users[u].frames[f].score == v3
         where:
         u|f|v1 |v2 |v3

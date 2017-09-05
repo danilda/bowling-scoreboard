@@ -4,7 +4,6 @@ import static ScoreService.MAX_NUMBER_OF_USERS
 
 class Game {
 
-    //todo: Date startDate - check it
     Date date
 
     static hasMany = [users: User]

@@ -1,8 +1,11 @@
 <html>
 <head>
     <title>Main Page</title>
-    <asset:stylesheet src="customStyles/addUserStyle.css"/>
     <asset:stylesheet src="bootstrap.css"/>
+
+    <asset:stylesheet src="customStyles/addUserStyle.css"/>
+    <asset:stylesheet src="customStyles/navBar.css"/>
+
 </head>
 
 <body>
@@ -19,7 +22,7 @@
     </div>
 
     <g:form action="addUser" method="POST">
-        <div class="nav middle">
+        <div class="game-buttons middle">
             <g:actionSubmit value="Add user" class="btn btn-success" action="addUser"/>
             <g:actionSubmit value="Remove user" class="btn btn-danger" action="removeUser"/>
             <g:actionSubmit value="Start game" class="btn btn-primary" action="addNewGame"/>
@@ -30,10 +33,22 @@
                 <g:textField name="users.names[$i]" value="${name}"/><br><br>
             </g:each>
         </div>
-        <g:renderErrors bean="${users}"/>
-        <g:if test="${flash.errors}">
-            <h3>${flash.errors}!</h3>
+        <g:if test="${error == true}">
+            <g:hasErrors bean="${users}">
+                <div class="alert alert-warning alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>Warning!</strong> <g:message error="${users.errors.getFieldErrors('names')[0]}" />
+                </div>
+            </g:hasErrors>
         </g:if>
+        <g:if test="${flash.error != null}">
+            <div class="alert alert-warning alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>Warning!</strong> <g:message error="${flash.error}" />
+            </div>
+        </g:if>
+
+
     </g:form>
 
 </div>
