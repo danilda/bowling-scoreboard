@@ -11,11 +11,12 @@ class Game {
         date nullable: true
         users nullable: true, validator: {
             val, obj ->
-            if(val != null){
-                def numbers = val*.number
-                return numbers.size() == numbers.unique().size()&& val.size() <= MAX_NUMBER_OF_USERS
-            }
-                return true
+                if(val != null){
+                    def numbers = val*.number
+                    println numbers
+                    return numbers.size() == numbers.unique().size()&& val.size() <= MAX_NUMBER_OF_USERS
+                }
+                true
         }
     }
 }

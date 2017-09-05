@@ -11,10 +11,33 @@ class GameSpec extends Specification implements DomainUnitTest<Game> {
     def cleanup() {
     }
 
-//    void "test validator"() {
-//        when:
-//            domain.date = new Date()
-//        then:"fix me"
-//            domain.validate(['date'])
-//    }
+    void "test validator"() {
+        when:
+            def users = []
+            for(i in 0..5){
+                users.add new User(name: i, number: i)
+            }
+            domain.users = users
+        then:"fix me"
+            domain.validate(['users'])
+
+        when:
+            users = []
+            for(i in 0..4){
+                users.add new User(name: i, number: i)
+            }
+            users.add new User(name: "fail", number: 0)
+            domain.users = users
+        then:"fix me"
+            !domain.validate(['users'])
+
+        when:
+            users = []
+            for(i in 0..10){
+                users.add new User(name: i, number: i)
+            }
+            domain.users = users
+        then:"fix me"
+            !domain.validate(['users'])
+    }
 }
