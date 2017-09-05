@@ -66,11 +66,9 @@ class GameService {
     }
 
     private processLastFrame(Frame frame, Map rolls) {
-        println frame
         def rollOne = defaultRollOne frame
         def rollTwo = defaultRollTwo frame
         def rollThree = defaultRollThree frame
-        println rollThree
         rolls << [rollOne: rollOne, rollTwo: rollTwo, rollThree: rollThree]
         if (ScoreService.isStrike(frame)) {
             rolls << [rollOne: STRIKE]

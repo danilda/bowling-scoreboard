@@ -13,7 +13,6 @@ class Game {
             val, obj ->
                 if(val != null){
                     def numbers = val*.number
-                    println numbers
                     return numbers.size() == numbers.unique().size()&& val.size() <= MAX_NUMBER_OF_USERS
                 }
                 true

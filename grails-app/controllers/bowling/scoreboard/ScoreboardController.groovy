@@ -54,7 +54,6 @@ class ScoreboardController {
     }
 
     def saveRoll(RollCommand roll) {
-        println roll.game
         Game game = gameDBService.addRollInGame roll
         redirect action: 'showGame', params: [id: game.id]
     }
