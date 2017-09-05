@@ -2,10 +2,22 @@
 <head>
     <title>Main Page</title>
     <asset:stylesheet src="customStyles/addUserStyle.css"/>
+    <asset:stylesheet src="bootstrap.css"/>
 </head>
 
 <body>
 <div>
+    <div class="nav-menu middle">
+        <span>
+            <g:link controller="scoreboard" action="index">Main menu</g:link>
+        </span>
+        <span>
+            <g:link controller="scoreboard" action="addUser">Create new game</g:link>
+        </span>
+        <span>
+            <g:link controller="scoreboard" action="showGameList">Show all games</g:link>
+        </span>
+    </div>
 
     <g:form action="addUser" method="POST">
         <div class="nav middle">
@@ -14,14 +26,14 @@
             <g:actionSubmit value="Start game" class="btn btn-primary" action="addNewGame"/>
         </div>
         <div class="main middle">
-            <g:hiddenField name="date" value="123"/>
             <g:each status="i" in="${users.names}" var="name">
                 <lable>Player ${i + 1}</lable> <br>
                 <g:textField name="users.names[$i]" value="${name}"/><br><br>
             </g:each>
         </div>
-        <g:if test="${flash.error}">
-            <h3>${flash.error}!</h3>
+        <g:renderErrors bean="${users}"/>
+        <g:if test="${flash.errors}">
+            <h3>${flash.errors}!</h3>
         </g:if>
     </g:form>
 

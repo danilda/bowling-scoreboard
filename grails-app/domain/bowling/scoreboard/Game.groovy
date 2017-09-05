@@ -3,19 +3,18 @@ package bowling.scoreboard
 import static ScoreService.MAX_NUMBER_OF_USERS
 
 class Game {
+
+    //todo: Date startDate - check it
     Date date
 
     static hasMany = [users: User]
     static constraints = {
-        date nullable: true, validator: {val , obj -> val.getTime() <= new Date().getTime()}
+        date nullable: true
         users nullable: true, validator: {
             val, obj ->
             if(val != null){
-                Set<Integer> set = new HashSet()
-                val.each {
-                    set.add(it.getNumber())
-                }
-                return set.size() == val.size()&& val.size() <= MAX_NUMBER_OF_USERS
+                def numbers = val*.number
+                return numbers.size() == numbers.unique().size()&& val.size() <= MAX_NUMBER_OF_USERS
             }
                 return true
         }

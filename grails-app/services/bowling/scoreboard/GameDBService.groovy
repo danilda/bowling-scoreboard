@@ -1,74 +1,56 @@
 package bowling.scoreboard
 
-import commandObject.Roll
+import commandObject.RollCommand
 import grails.gorm.transactions.Transactional
 import static enums.RollsEnum.ROLL_ONE
 import static enums.RollsEnum.ROLL_TWO
 import static ScoreService.ALL_BOWLS
 import static ScoreService.LAST_FRAME
+import static GameService.SORT_BY_NUMBER
 
 @Transactional
 class GameDBService {
     ScoreService scoreService
 
     def addNewGame(List<User> users) {
-        Game game = new Game(date: new Date())
-        users.each { user ->
-            game.addToUsers(user)
-        }
-        game.save()
-        game
+        new Game(date: new Date(), users: users ).save()
     }
 
-    def addRollInGame(Roll roll) {
-        println(roll)
-        Game game = Game.get(roll.getGameId())
-        println(game)
-        List<User> users = game.getUsers().toList().sort { current, next -> current.number <=> next.number }
-        User currentUser = users[(int) roll.getUserNumber()]
+    def addRollInGame(RollCommand roll) {
+        Game game = Game.get(roll.game)
+        User currentUser = game.users.find { it.number == roll.userNumber}
         addRollInUser(currentUser, roll)
         scoreService.calculateFrames currentUser
         game.save()
-        println "GameDBService" + game
-        game.getUsers().each {
-            println "GameDBService" + it
-            it?.getFrames()?.each {
-                println "GameDBService" + it
-            }
-        }
-        game
     }
 
-    private addRollInUser(User user, Roll roll) {
-        List frames = user.getFrames().toList().sort { current, next -> current.number <=> next.number }
-        def currentFrame = frames[(int) roll.getFrameNumber()]
-        if (roll.getRollNumber() == ROLL_ONE.id) {
+    private addRollInUser(User user, RollCommand roll) {
+        def currentFrame = user.frames.find {it.number == roll.frameNumber}
+        if (roll.rollNumber == ROLL_ONE.id) {
             addRollOne(user, roll)
-        } else if (roll.getRollNumber() == ROLL_TWO.id){
+        } else if (roll.rollNumber == ROLL_TWO.id){
             addRollTwo(currentFrame, roll)
         } else {
             addRollThree(currentFrame, roll)
         }
     }
 
-    private addRollOne(User user, Roll roll) {
-        if (roll.getValue() == ALL_BOWLS && roll.frameNumber != LAST_FRAME) {
-            user.addToFrames(new Frame(number: roll.getFrameNumber(), rollOne: roll.getValue(), rollTwo: 0))
+    private addRollOne(User user, RollCommand roll) {
+        if (roll.value == ALL_BOWLS && roll.frameNumber != LAST_FRAME) {
+            user.addToFrames(new Frame(number: roll.frameNumber, rollOne: roll.value, rollTwo: 0))
         } else {
-            user.addToFrames(new Frame(number: roll.getFrameNumber(), rollOne: roll.getValue()))
+            user.addToFrames(new Frame(number: roll.frameNumber, rollOne: roll.value))
         }
     }
 
-    //TODO правильно ли тут сетить третий?
-    private addRollTwo(Frame frame, Roll roll) {
-        println "addRollTwo " + roll
+    private addRollTwo(Frame frame, RollCommand roll) {
         frame.rollTwo = roll.value
         if(frame.number == LAST_FRAME && (frame.rollOne + frame.rollTwo) < ALL_BOWLS){
             frame.rollThree = 0
         }
     }
 
-    private addRollThree(Frame frame, Roll roll) {
+    private addRollThree(Frame frame, RollCommand roll) {
         frame.rollThree = roll.value
     }
 

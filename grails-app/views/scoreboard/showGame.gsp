@@ -1,12 +1,26 @@
 <html>
     <head>
         <title>Main Page</title>
+        <asset:stylesheet src="customStyles/addUserStyle.css"/>
+        <asset:stylesheet src="bootstrap.css"/>
     </head>
     <body>
         <div>
+            <div class="nav-menu middle">
+                <span>
+                    <g:link controller="scoreboard" action="index">Main menu</g:link>
+                </span>
+                <span>
+                    <g:link controller="scoreboard" action="addUser">Create new game</g:link>
+                </span>
+                <span>
+                    <g:link controller="scoreboard" action="showGameList">Show all games</g:link>
+                </span>
+            </div>
+
             <h1>Hello World</h1>
             <g:if test="${nextRoll}">
-                <h2>gameNumber = ${nextRoll.gameId} ,  userNumber = ${nextRoll.userNumber}, frameNumber = ${nextRoll.frameNumber}, rollNumber = ${nextRoll.rollNumber}</h2>
+                <h2>Game id = ${nextRoll.game} </h2>
             </g:if>
             <g:form action="saveRoll"  method="POST">
                 <table class="table table-bordered">
@@ -45,7 +59,7 @@
                             </g:if>
                         </g:each>
                         <g:if test="${nextRoll?.userNumber == i}">
-                            <g:hiddenField name="roll.gameId" value="${nextRoll.gameId}" />
+                            <g:hiddenField name="roll.game" value="${nextRoll.game}" />
                             <g:hiddenField name="roll.userNumber" value="${nextRoll.userNumber}" />
                             <g:hiddenField name="roll.frameNumber" value="${nextRoll.frameNumber}" />
                             <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />

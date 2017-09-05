@@ -1,5 +1,8 @@
 package bowling.scoreboard
 
+import static ScoreService.LAST_FRAME
+import static ScoreService.ALL_BOWLS
+
 class Frame {
     Integer number
     Integer rollOne
@@ -16,9 +19,9 @@ class Frame {
             val, obj ->
                 def a = val?:0
                 def b = obj.rollOne?:0
-                if((a + b) <= 10){
+                if((a + b) <= ALL_BOWLS){
                     return true
-                } else if(obj.number == 9 && obj.rollOne == 10 && (val + obj.rollOne) <= 20){
+                } else if(obj.number == LAST_FRAME && obj.rollOne == ALL_BOWLS && (val + obj.rollOne) <= 20){
                     return true
                 }
                 false
@@ -28,24 +31,10 @@ class Frame {
                 def a = obj.rollOne?:0
                 def b = obj.rollTwo?:0
                 if(val != null ) {
-                    return obj.number == 9 && ((a + b) >= 10 || val == 0)
+                    return obj.number == LAST_FRAME && ((a + b) >= ALL_BOWLS || val == 0)
                 }
-                return true
+                true
         }
     }
 
-
-    @Override
-    String toString() {
-        return "Frame{" +
-                "id=" + id +
-                ", version=" + version +
-                ", user=" + user +
-                ", number=" + number +
-                ", rollOne=" + rollOne +
-                ", rollTwo=" + rollTwo +
-                ", rollThree=" + rollThree +
-                ", score=" + score +
-                '}'
-    }
 }

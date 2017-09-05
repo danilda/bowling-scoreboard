@@ -4,6 +4,10 @@ import static ScoreService.MAX_NUMBER_OF_FRAMES
 
 class User {
     String name
+
+    /**
+     * Sequence number of the player in the game.
+     */
     Integer number
 
     static belongsTo = [game: Game]
@@ -13,21 +17,10 @@ class User {
         frames nullable: true, validator: {
             val, obj ->
                 if(val != null) {
-                    Set<Integer> set = new HashSet()
-                    val.each {
-                        set.add(it.getNumber())
-                    }
-                    return set.size() == val.size() && val.size() <= MAX_NUMBER_OF_FRAMES
+                    def numbers = val*.number
+                    return numbers.size() == numbers.unique().size() && val.size() <= MAX_NUMBER_OF_FRAMES
                 }
                 true
         }
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", number=" + number +
-                '}';
     }
 }

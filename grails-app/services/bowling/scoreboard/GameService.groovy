@@ -1,8 +1,7 @@
 package bowling.scoreboard
 
-import exception.DateValidationException
 import grails.gorm.transactions.Transactional
-import commandObject.Roll
+import commandObject.RollCommand
 import static enums.RollsEnum.ROLL_ONE
 import static enums.RollsEnum.ROLL_TWO
 import static enums.RollsEnum.ROLL_THREE
@@ -16,28 +15,24 @@ import static ScoreService.FIRST_USER
 @Transactional
 class GameService {
     public static final Closure SORT_BY_NUMBER = { current, next -> current.number <=> next.number }
+    public static final String STRIKE = "X"
+    public static final String SPARE = "/"
+    public static final String MISS = "-"
+    public static final String EMPTY = ""
 
-    def getMapForRenderingFromGame(Game game) {
-        def map = [game: game.getId()]
-        map << [users: getUserListForRendering(game)]
-        map
-    }
-
-    private getUserListForRendering(Game game) {
-        List<User> users = game.getUsers().toList().sort SORT_BY_NUMBER
-        List<Map> resultUserList = new LinkedList<>()
-        users.each { user ->
-            resultUserList.add([name: user.getName(), frames: getFrameListFromUser(user)])
+    def getModelForRendering(Game game) {
+        List<User> users = game.getUsers().sort SORT_BY_NUMBER
+        List<Map> resultUserList = users.collect { user ->
+            [name: user.getName(), frames: getFrameListFromUser(user)]
         }
-        resultUserList
+        [game: game.getId(), users: resultUserList]
     }
 
     private getFrameListFromUser(User user) {
-        List<Map> resultFrameList = new LinkedList<>()
+        List<Map> resultFrameList = []
         if (user.frames != null) {
-            List<Frame> frames = user.frames.toList().sort SORT_BY_NUMBER
-            frames.each { frame ->
-                resultFrameList.add(getRollMapFromFrame(frame))
+            resultFrameList = user.frames.sort(SORT_BY_NUMBER).collect { frame ->
+                getRollMapFromFrame(frame)
             }
         }
         resultFrameList
@@ -58,71 +53,82 @@ class GameService {
 
     private processNotLastFrame(Frame frame, Map rolls) {
         if (ScoreService.isStrike(frame)) {
-            rolls << [rollOne: "X", rollTwo: ""]
+            rolls << [rollOne: STRIKE, rollTwo: EMPTY]
         } else {
-            def rollOne = frame.rollOne == 0 ? "-" : frame.rollOne.toString()
-            def rollTwo = frame.rollTwo == 0 ? "-" : frame.rollTwo.toString()
+            def rollTwo = null
             if (ScoreService.isSpare(frame)) {
-                rollTwo = "/"
+                rollTwo = SPARE
+            } else {
+                rollTwo = defaultRollTwo(frame)
             }
-            rolls << [rollOne: rollOne, rollTwo: rollTwo]
+            rolls << [rollOne: defaultRollOne(frame), rollTwo: rollTwo]
         }
     }
 
+    //todo remove rewriting
     private processLastFrame(Frame frame, Map rolls) {
         println frame
-        def rollOne = frame.rollOne == 0 ? "-" : frame.rollOne.toString()
-        def rollTwo = frame.rollTwo == 0 ? "-" : frame.rollTwo.toString()
-        def rollThree = (frame.rollThree == 0) ? "" : frame.rollThree.toString()
+        def rollOne = defaultRollOne frame
+        def rollTwo = defaultRollTwo frame
+        def rollThree = defaultRollThree frame
         rolls << [rollOne: rollOne, rollTwo: rollTwo, rollThree: rollThree]
         if (ScoreService.isStrike(frame)) {
-            rolls << [rollOne: "X"]
+            rolls << [rollOne: STRIKE]
             if (frame.rollTwo == ALL_BOWLS) {
-                rolls << [rollTwo: "X"]
+                rolls << [rollTwo: STRIKE]
                 if (frame.rollThree == ALL_BOWLS) {
-                    rolls << [rollThree: "X"]
+                    rolls << [rollThree: STRIKE]
                 }
             } else {
                 def a = frame.rollTwo ?: 0
                 def b = frame.rollThree ?: 0
                 if ((a + b) == ALL_BOWLS) {
-                    rolls << [rollThree: "/"]
+                    rolls << [rollThree: SPARE]
                 }
             }
         } else if (ScoreService.isSpare(frame)) {
-            rolls << [rollTwo: "/"]
+            rolls << [rollTwo: SPARE]
             if (frame.rollThree == ALL_BOWLS) {
-                rolls << [rollThree: "X"]
+                rolls << [rollThree: STRIKE]
             }
             if (frame.rollThree == 0) {
-                rolls << [rollThree: "-"]
+                rolls << [rollThree: MISS]
             }
         }
     }
 
+    private defaultRollOne(Frame frame) {
+        frame.rollOne == 0 ? MISS : frame.rollOne.toString()
+    }
+
+    private defaultRollTwo(Frame frame) {
+        frame.rollTwo == 0 ? MISS : frame.rollTwo.toString()
+    }
+
+    private defaultRollThree(Frame frame) {
+        frame.rollTwo == 0 ? EMPTY : frame.rollTwo.toString()
+    }
 
     def getNextStep(Game game) {
         if (isGameEnded(game)) {
             return null
         }
-        Roll roll = getNextRoll(game)
-        roll.setGameId(game?.getId())
+        RollCommand roll = getNextRoll(game)
+        roll.game = game.id
         calculateMaxValue(game, roll)
         roll
     }
 
     private getNextRoll(Game game) {
-        List<User> users = game.getUsers().toList().sort SORT_BY_NUMBER
+        List<User> users = game.getUsers().sort SORT_BY_NUMBER
         if (!isAnyUserHasFrame(game)) {
-            return new Roll(userNumber: FIRST_USER, frameNumber: FIRS_FRAME, rollNumber: ROLL_ONE.id)
+            return new RollCommand(userNumber: FIRST_USER, frameNumber: FIRS_FRAME, rollNumber: ROLL_ONE.id)
         }
-
         for (int i = 0; i < users.size() - 1; i++) {
             if (users[i].frames?.size() > users[i + 1].frames?.size()) {
                 return getRollByProcessingNotLastUser(users, i)
             }
         }
-
         return getRollByProcessingLastUser(users)
     }
 
@@ -138,12 +144,12 @@ class GameService {
     private getRollByProcessingNotLastUser(List<User> users, int i) {
         Frame lastFrame = getLastUserFrame(users[i])
         if (lastFrame == null) {
-            return new Roll(userNumber: i, frameNumber: FIRS_FRAME, rollNumber: ROLL_ONE.id)
+            return new RollCommand(userNumber: i, frameNumber: FIRS_FRAME, rollNumber: ROLL_ONE.id)
         }
         if (isFrameEnded(lastFrame)) {
-            return new Roll(userNumber: users[i + 1].getNumber(), frameNumber: lastFrame.number, rollNumber: ROLL_ONE.id)
+            return new RollCommand(userNumber: users[i + 1].number, frameNumber: lastFrame.number, rollNumber: ROLL_ONE.id)
         }
-        def roll = new Roll(userNumber: users[i].getNumber(), frameNumber: lastFrame.number)
+        def roll = new RollCommand(userNumber: users[i].number, frameNumber: lastFrame.number)
         roll.rollNumber = getRollNumberForNotEndedFrame(lastFrame)
         return roll
     }
@@ -151,12 +157,12 @@ class GameService {
     private getRollByProcessingLastUser(List<User> users) {
         User lastUser = users[users.size() - 1]
         if (isFrameEnded(getLastUserFrame(lastUser))) {
-            return new Roll(userNumber: FIRS_FRAME,
+            return new RollCommand(userNumber: FIRS_FRAME,
                     frameNumber: getLastUserFrame(users[FIRST_USER]).number + 1, rollNumber: ROLL_ONE.id)
         } else {
-            Roll roll = new Roll(userNumber: users.size() - 1)
-            roll.setFrameNumber(getLastUserFrame(lastUser).getNumber())
-            roll.setRollNumber(getRollNumberForNotEndedFrame(getLastUserFrame(lastUser)))
+            RollCommand roll = new RollCommand(userNumber: users.size() - 1)
+            roll.frameNumber = getLastUserFrame(lastUser).number
+            roll.rollNumber = getRollNumberForNotEndedFrame(getLastUserFrame(lastUser))
             return roll
         }
     }
@@ -172,7 +178,7 @@ class GameService {
         }
     }
 
-    private calculateMaxValue(Game game, Roll roll) {
+    private calculateMaxValue(Game game, RollCommand roll) {
         if (roll.rollNumber == ROLL_ONE.id) {
             roll.maxValue = ALL_BOWLS
         } else {
@@ -180,9 +186,9 @@ class GameService {
         }
     }
 
-    private calculateMaxValueForRollTwoAndThree(Game game, Roll roll) {
-        User user = game.users.toList().sort(SORT_BY_NUMBER).get(roll.userNumber)
-        Frame frame = user.frames.toList().sort(SORT_BY_NUMBER).get(roll.frameNumber)
+    private calculateMaxValueForRollTwoAndThree(Game game, RollCommand roll) {
+        User user = game.users.find { it.number == roll.userNumber }
+        Frame frame = user.frames.find { it.number == roll.frameNumber}
         if (roll.rollNumber == ROLL_TWO.id) {
             calculateMaxValueForRollTwo(frame, roll)
         } else {
@@ -190,7 +196,7 @@ class GameService {
         }
     }
 
-    private calculateMaxValueForRollTwo(Frame frame, Roll roll) {
+    private calculateMaxValueForRollTwo(Frame frame, RollCommand roll) {
         if (frame.number != LAST_FRAME) {
             roll.maxValue = ALL_BOWLS - frame.rollOne
         } else {
@@ -202,7 +208,7 @@ class GameService {
         }
     }
 
-    private calculateMaxValueForRollThree(Frame frame, Roll roll) {
+    private calculateMaxValueForRollThree(Frame frame, RollCommand roll) {
         if (ScoreService.isStrike(frame)) {
             if (frame.rollTwo == ALL_BOWLS) {
                 roll.maxValue = ALL_BOWLS
@@ -214,7 +220,6 @@ class GameService {
         }
     }
 
-    //TODO спросить почему нельзя просто ретурнить
     def isGameEnded(Game game) {
         def result = true
         game.getUsers().each { user ->
@@ -238,8 +243,8 @@ class GameService {
     }
 
     def getLastUserFrame(User user) {
-        if (user.getFrames() != null && user.getFrames().size() != 0) {
-            return user.getFrames().sort(SORT_BY_NUMBER).get(user.getFrames()?.size() - 1)
+        if (user.frames != null && user.frames.size() != 0) {
+            return user.frames.sort(SORT_BY_NUMBER).last()
         }
         return null
     }

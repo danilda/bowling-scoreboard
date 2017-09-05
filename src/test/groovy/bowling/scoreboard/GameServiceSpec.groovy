@@ -1,9 +1,8 @@
 package bowling.scoreboard
 
-import commandObject.Roll
+import commandObject.RollCommand
 import grails.test.hibernate.HibernateSpec
 import grails.testing.services.ServiceUnitTest
-import spock.lang.Specification
 
 class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameService>{
 
@@ -27,7 +26,6 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
         }
         game.addToUsers(user)
         Map renderMap = service.getMapForRenderingFromGame game
-        println renderMap.users[0].frames[f].scores
         renderMap.users[0].frames[f].rollOne == v1 && renderMap.users[0].frames[f].rollTwo == v2 && renderMap.users[0].frames[f].score == v3
         where:
         f|v1 |v2 |v3
@@ -83,7 +81,6 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
         1|7|"7"|"/" |143
         1|8|"9"|"-" |152
         1|9|"X"|"X" |180
-        //TODO Несколько таблиц в одном тесте?
     }
 
     void "test next roll"() {
@@ -110,7 +107,7 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
         game.addToUsers(user)
         game.addToUsers(user2)
         game.addToUsers(user3)
-        Roll roll = service.getNextStep(game)
+        RollCommand roll = service.getNextStep(game)
         then:
         roll.userNumber == (long)1
         roll.rollNumber == 1

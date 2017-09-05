@@ -2,6 +2,7 @@ package bowling.scoreboard
 
 import exception.FramesValidationException
 import grails.gorm.transactions.Transactional
+import static GameService.SORT_BY_NUMBER
 
 @Transactional
 class ScoreService {
@@ -11,6 +12,7 @@ class ScoreService {
     public static final MAX_NUMBER_OF_USERS = 6
     public static final MAX_NUMBER_OF_FRAMES = 10
     public static final ALL_BOWLS = 10
+    public static final DEFAULT_SCORE_VALUE = 0
 
 
     static isStrike(Frame frame) {
@@ -24,11 +26,10 @@ class ScoreService {
         false
     }
 
-    static getSortedValidListOfFramesFromUser(User user) {
-        List<Frame> list = user.getFrames().toList().sort { current, next -> current.number <=> next.number }
+    static getSortedValidListOfFrames(User user) {
+        List<Frame> list = user.getFrames().sort SORT_BY_NUMBER
         list.each {
             if (!it.validate(['number', 'rollOne', 'rollTwo', 'rollThree'])) {
-                println it.errors.each {it.toString()}
                 throw new FramesValidationException("Exception in " + it.toString())
             }
         }
@@ -36,9 +37,9 @@ class ScoreService {
     }
 
     def calculateFrames(User user) throws FramesValidationException {
-        List<Frame> frames = getSortedValidListOfFramesFromUser(user)
+        List<Frame> frames = getSortedValidListOfFrames(user)
         for (Frame frame: frames) {
-            frame.setScore(0)
+            frame.score = DEFAULT_SCORE_VALUE
         }
         for (int i in FIRS_FRAME..frames.size()-1) {
             int score = calculateOneFrame(frames, i)
@@ -51,41 +52,48 @@ class ScoreService {
     }
 
     private calculateOneFrame(List<Frame> frames, int i){
-        def rollOne = frames[i].rollOne?:0
-        def rollTwo = frames[i].rollTwo?:0
         def additionalScores = 0
         if (isStrike(frames[i])) {
             additionalScores = calculateStrike(frames, i)
         } else if (isSpare(frames[i])) {
             additionalScores = calculateSpare(frames, i)
         }
-        return rollOne + rollTwo + additionalScores
+        return defaultRollOne(frames[i]) + defaultRollTwo(frames[i]) + additionalScores
     }
 
     private calculateStrike(List<Frame> frames, int i) {
-        def nextFrameRollOne = frames[i + 1]?.rollOne?:0
-        def nextFrameRollTwo = frames[i + 1]?.rollTwo?:0
-        def throughOneFrameRollOne = frames[i + 2]?.rollOne?:0
         if (i != LAST_FRAME) {
             if (isStrike(frames[i + 1])) {
                 if (i + 2 > LAST_FRAME) {
-                    return nextFrameRollOne + nextFrameRollTwo
+                    return defaultRollOne(frames[i + 1]) + defaultRollTwo(frames[i + 1])
                 }
-                return nextFrameRollOne + throughOneFrameRollOne
+                return defaultRollOne(frames[i + 1]) + defaultRollOne(frames[i + 2])
             }
-            return nextFrameRollOne + nextFrameRollTwo
+            return defaultRollOne(frames[i + 1]) + defaultRollTwo(frames[i + 1])
         }
-        def frameRollThree = frames[i].rollThree?:0
+        def frameRollThree = defaultRollThree(frames[i])
         return  frameRollThree
     }
 
     private calculateSpare(List<Frame> frames, int i) {
-        def nextFrameRollOne = frames[i + 1]?.rollOne?:0
+        def nextFrameRollOne = defaultRollOne(frames[i + 1])
         if (i != LAST_FRAME) {
             return nextFrameRollOne
         }
-        def frameRollThree = frames[i].rollThree?:0
+        def frameRollThree = defaultRollThree(frames[i])
         return frameRollThree
+    }
+
+    private defaultRollOne(Frame frame){
+        frame?.rollOne?:0
+    }
+
+    private defaultRollTwo(Frame frame){
+        frame?.rollTwo?:0
+    }
+
+    private defaultRollThree(Frame frame){
+        frame?.rollThree?:0
     }
 
 }
