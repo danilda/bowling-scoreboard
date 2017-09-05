@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <asset:stylesheet src="showGameList.css"/>
+        <asset:stylesheet src="customStyles/showGameList.css"/>
+        <asset:stylesheet src="bootstrap.css"/>
         <title>Main Page</title>
     </head>
     <body>

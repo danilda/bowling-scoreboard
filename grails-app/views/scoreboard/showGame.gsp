@@ -6,17 +6,15 @@
     </head>
     <body>
         <div>
-            <div class="nav-menu middle">
-                <span>
-                    <g:link controller="scoreboard" action="index">Main menu</g:link>
-                </span>
-                <span>
-                    <g:link controller="scoreboard" action="addUser">Create new game</g:link>
-                </span>
-                <span>
-                    <g:link controller="scoreboard" action="showGameList">Show all games</g:link>
-                </span>
+            <div class="navbar navbar-static-top">
+                <div class="collapse navbar-collapse" id="responsive-menu">
+                    <ul class="nav navbar-nav">
+                        <li><g:link controller="scoreboard" action="index">Main menu</g:link></li>
+                        <li> <g:link controller="scoreboard" action="showGameList">Show all games</g:link></li>
+                    </ul>
+                </div>
             </div>
+        </div>
 
             <h1>Hello World</h1>
             <g:if test="${nextRoll}">
