@@ -4,6 +4,13 @@ import static ScoreService.LAST_FRAME
 import static ScoreService.ALL_BOWLS
 
 class Frame {
+    //TODO resolve imports and to find way for unsaveing constants
+    public static final FIRS_FRAME = 0
+    public static final LAST_FRAME = 9
+    public static final MAX_NUMBER_OF_FRAMES = 10
+    public static final ALL_BOWLS = 10
+    public static final DEFAULT_SCORE_VALUE = 0
+
     Integer number
     Integer rollOne
     Integer rollTwo
@@ -35,6 +42,17 @@ class Frame {
                 }
                 true
         }
+    }
+
+    def isStrike() {
+        this?.rollOne == ALL_BOWLS
+    }
+
+    def isSpare() {
+        if(this.rollOne != null && this.rollTwo != null) {
+            return  (this.rollOne + this.rollTwo) == ALL_BOWLS
+        }
+        false
     }
 
 }

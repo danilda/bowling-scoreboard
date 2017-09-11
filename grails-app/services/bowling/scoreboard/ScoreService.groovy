@@ -1,43 +1,13 @@
 package bowling.scoreboard
 
-import exception.FramesValidationException
 import grails.gorm.transactions.Transactional
 import static GameService.SORT_BY_NUMBER
 
 @Transactional
 class ScoreService {
-    public static final FIRS_FRAME = 0
-    public static final LAST_FRAME = 9
-    public static final FIRST_USER = 0
-    public static final MAX_NUMBER_OF_USERS = 6
-    public static final MAX_NUMBER_OF_FRAMES = 10
-    public static final ALL_BOWLS = 10
-    public static final DEFAULT_SCORE_VALUE = 0
 
-
-    static isStrike(Frame frame) {
-        frame?.rollOne == ALL_BOWLS
-    }
-
-    static isSpare(Frame frame) {
-        if(frame.rollOne != null && frame.rollTwo != null) {
-            return  (frame.rollOne + frame.rollTwo) == ALL_BOWLS
-        }
-        false
-    }
-
-    static getSortedValidListOfFrames(User user) {
-        List<Frame> list = user.getFrames().sort SORT_BY_NUMBER
-        list.each {
-            if (!it.validate(['number', 'rollOne', 'rollTwo', 'rollThree'])) {
-                throw new FramesValidationException("Exception in " + it.toString())
-            }
-        }
-        list
-    }
-
-    def calculateFrames(User user) throws FramesValidationException {
-        List<Frame> frames = getSortedValidListOfFrames(user)
+    def calculateFrames(User user) {
+        List<Frame> frames = user.getFrames().sort SORT_BY_NUMBER
         for (Frame frame: frames) {
             frame.score = DEFAULT_SCORE_VALUE
         }

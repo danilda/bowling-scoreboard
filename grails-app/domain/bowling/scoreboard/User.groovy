@@ -3,6 +3,10 @@ package bowling.scoreboard
 import static ScoreService.MAX_NUMBER_OF_FRAMES
 
 class User {
+    //TODO resolve imports and to find way for unsaveing constants
+    public static final FIRST_USER = 0
+    public static final MAX_NUMBER_OF_USERS = 6
+
     String name
 
     /**
