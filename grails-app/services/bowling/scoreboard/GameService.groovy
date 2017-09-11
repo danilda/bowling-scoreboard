@@ -5,11 +5,11 @@ import commandObject.RollCommand
 import static enums.RollsEnum.ROLL_ONE
 import static enums.RollsEnum.ROLL_TWO
 import static enums.RollsEnum.ROLL_THREE
-import static ScoreService.FIRS_FRAME
-import static ScoreService.LAST_FRAME
-import static ScoreService.ALL_BOWLS
-import static ScoreService.MAX_NUMBER_OF_FRAMES
-import static ScoreService.FIRST_USER
+import static constants.GameConstants.LAST_FRAME
+import static constants.GameConstants.ALL_BOWLS
+import static constants.GameConstants.FIRST_USER
+import static constants.GameConstants.MAX_NUMBER_OF_FRAMES
+import static constants.GameConstants.FIRS_FRAME
 
 
 @Transactional
@@ -52,11 +52,11 @@ class GameService {
     }
 
     private processNotLastFrame(Frame frame, Map rolls) {
-        if (ScoreService.isStrike(frame)) {
+        if (frame.isStrike()) {
             rolls << [rollOne: STRIKE, rollTwo: EMPTY]
         } else {
             def rollTwo = null
-            if (ScoreService.isSpare(frame)) {
+            if (frame.isSpare()) {
                 rollTwo = SPARE
             } else {
                 rollTwo = defaultRollTwo(frame)
@@ -70,7 +70,7 @@ class GameService {
         def rollTwo = defaultRollTwo frame
         def rollThree = defaultRollThree frame
         rolls << [rollOne: rollOne, rollTwo: rollTwo, rollThree: rollThree]
-        if (ScoreService.isStrike(frame)) {
+        if (frame.isStrike()) {
             rolls << [rollOne: STRIKE]
             if (frame.rollTwo == ALL_BOWLS) {
                 rolls << [rollTwo: STRIKE]
@@ -84,7 +84,7 @@ class GameService {
                     rolls << [rollThree: SPARE]
                 }
             }
-        } else if (ScoreService.isSpare(frame)) {
+        } else if (frame.isSpare()) {
             rolls << [rollTwo: SPARE]
             if (frame.rollThree == ALL_BOWLS) {
                 rolls << [rollThree: STRIKE]
@@ -198,7 +198,7 @@ class GameService {
         if (frame.number != LAST_FRAME) {
             roll.maxValue = ALL_BOWLS - frame.rollOne
         } else {
-            if (ScoreService.isStrike(frame)) {
+            if (frame.isStrike()) {
                 roll.maxValue = ALL_BOWLS
             } else {
                 roll.maxValue = ALL_BOWLS - frame.rollOne
@@ -207,7 +207,7 @@ class GameService {
     }
 
     private calculateMaxValueForRollThree(Frame frame, RollCommand roll) {
-        if (ScoreService.isStrike(frame)) {
+        if (frame.isStrike()) {
             if (frame.rollTwo == ALL_BOWLS) {
                 roll.maxValue = ALL_BOWLS
             } else {

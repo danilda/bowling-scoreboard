@@ -2,6 +2,9 @@ package bowling.scoreboard
 
 import grails.gorm.transactions.Transactional
 import static GameService.SORT_BY_NUMBER
+import static constants.GameConstants.DEFAULT_SCORE_VALUE
+import static constants.GameConstants.FIRS_FRAME
+import static constants.GameConstants.LAST_FRAME
 
 @Transactional
 class ScoreService {
@@ -23,9 +26,9 @@ class ScoreService {
 
     private calculateOneFrame(List<Frame> frames, int i){
         def additionalScores = 0
-        if (isStrike(frames[i])) {
+        if (frames[i].isStrike()) {
             additionalScores = calculateStrike(frames, i)
-        } else if (isSpare(frames[i])) {
+        } else if (frames[i].isSpare()) {
             additionalScores = calculateSpare(frames, i)
         }
         return defaultRollOne(frames[i]) + defaultRollTwo(frames[i]) + additionalScores
@@ -33,7 +36,7 @@ class ScoreService {
 
     private calculateStrike(List<Frame> frames, int i) {
         if (i != LAST_FRAME) {
-            if (isStrike(frames[i + 1])) {
+            if (frames[i + 1].isStrike()) {
                 if (i + 2 > LAST_FRAME) {
                     return defaultRollOne(frames[i + 1]) + defaultRollTwo(frames[i + 1])
                 }

@@ -4,9 +4,8 @@ import commandObject.RollCommand
 import grails.gorm.transactions.Transactional
 import static enums.RollsEnum.ROLL_ONE
 import static enums.RollsEnum.ROLL_TWO
-import static ScoreService.ALL_BOWLS
-import static ScoreService.LAST_FRAME
-import static GameService.SORT_BY_NUMBER
+import static constants.GameConstants.ALL_BOWLS
+import static constants.GameConstants.LAST_FRAME
 
 @Transactional
 class GameDBService {

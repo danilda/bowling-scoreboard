@@ -1,6 +1,6 @@
 package bowling.scoreboard
 
-import static ScoreService.MAX_NUMBER_OF_USERS
+import static constants.GameConstants.MAX_NUMBER_OF_USERS
 
 class Game {
 

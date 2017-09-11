@@ -1,16 +1,9 @@
 package bowling.scoreboard
 
-import static ScoreService.LAST_FRAME
-import static ScoreService.ALL_BOWLS
+import static constants.GameConstants.LAST_FRAME
+import static constants.GameConstants.ALL_BOWLS
 
 class Frame {
-    //TODO resolve imports and to find way for unsaveing constants
-    public static final FIRS_FRAME = 0
-    public static final LAST_FRAME = 9
-    public static final MAX_NUMBER_OF_FRAMES = 10
-    public static final ALL_BOWLS = 10
-    public static final DEFAULT_SCORE_VALUE = 0
-
     Integer number
     Integer rollOne
     Integer rollTwo
