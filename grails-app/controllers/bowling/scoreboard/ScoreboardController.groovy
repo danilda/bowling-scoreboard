@@ -10,25 +10,8 @@ class ScoreboardController {
     GameService gameService
     GameDBService gameDBService
 
-    def addUser(UsersNamesCommand users) {
-        if (users == null || users.getNames() == null) {
-            users = new UsersNamesCommand(names: [])
-        }
-        if (users.getNames().size() == 6) {
-            flash.put("error", "Maximum number of players 6!")
-        } else {
-            users.getNames().add("")
-        }
-        render view: "addUser", model: [users: users]
-    }
-
-    def removeUser(UsersNamesCommand users) {
-        if (users.names.size() == 1) {
-            flash.put("error", "There must be at least one player in the game")
-        } else {
-            users.getNames().remove(users.names.last())
-        }
-        render view: "addUser", model: [users: users]
+    def addUsers() {
+        render view: "addUsers"
     }
 
     def addNewGame(UsersNamesCommand users) {
