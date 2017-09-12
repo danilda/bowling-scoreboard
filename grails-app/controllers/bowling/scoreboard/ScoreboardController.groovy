@@ -63,6 +63,7 @@ class ScoreboardController {
     }
 
     def showGameList(){
-        respond Game.list(params)
+        render view: "showGameList" ,model: [gameList : Game.list(params)]
+//        render model: [gameList : Game.list(params)]
     }
 }

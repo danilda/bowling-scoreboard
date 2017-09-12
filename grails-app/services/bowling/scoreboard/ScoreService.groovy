@@ -36,7 +36,7 @@ class ScoreService {
 
     private calculateStrike(List<Frame> frames, int i) {
         if (i != LAST_FRAME) {
-            if (frames[i + 1].isStrike()) {
+            if (frames[i + 1]?.isStrike()) {
                 if (i + 2 > LAST_FRAME) {
                     return defaultRollOne(frames[i + 1]) + defaultRollTwo(frames[i + 1])
                 }
