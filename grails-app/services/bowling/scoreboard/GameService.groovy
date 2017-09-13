@@ -113,14 +113,14 @@ class GameService {
         }
         RollCommand roll = getNextRoll(game)
         roll.game = game.id
-        calculateMaxValue(game, roll)
+        calculateMaxValue(roll)
         roll
     }
 
     private getNextRoll(Game game) {
         List<User> users = game.getUsers().sort SORT_BY_NUMBER
         if (!isAnyUserHasFrame(game)) {
-            return new RollCommand(userNumber: FIRST_USER, frameNumber: FIRS_FRAME, rollNumber: ROLL_ONE.id)
+            return new RollCommand(user: users[FIRST_USER], frame: new Frame(number: FIRS_FRAME), rollNumber: ROLL_ONE.id)
         }
         for (int i = 0; i < users.size() - 1; i++) {
             if (users[i].frames?.size() > users[i + 1].frames?.size()) {
@@ -142,12 +142,12 @@ class GameService {
     private getRollByProcessingNotLastUser(List<User> users, int i) {
         Frame lastFrame = getLastUserFrame(users[i])
         if (lastFrame == null) {
-            return new RollCommand(userNumber: i, frameNumber: FIRS_FRAME, rollNumber: ROLL_ONE.id)
+            return new RollCommand(user: users[i], frame: new Frame(number: FIRS_FRAME), rollNumber: ROLL_ONE.id)
         }
         if (isFrameEnded(lastFrame)) {
-            return new RollCommand(userNumber: users[i + 1].number, frameNumber: lastFrame.number, rollNumber: ROLL_ONE.id)
+            return new RollCommand(user: users[i + 1], frame: new Frame(number:lastFrame.number), rollNumber: ROLL_ONE.id)
         }
-        def roll = new RollCommand(userNumber: users[i].number, frameNumber: lastFrame.number)
+        def roll = new RollCommand(user: users[i], frame: lastFrame)
         roll.rollNumber = getRollNumberForNotEndedFrame(lastFrame)
         return roll
     }
@@ -155,11 +155,11 @@ class GameService {
     private getRollByProcessingLastUser(List<User> users) {
         User lastUser = users[users.size() - 1]
         if (isFrameEnded(getLastUserFrame(lastUser))) {
-            return new RollCommand(userNumber: FIRS_FRAME,
-                    frameNumber: getLastUserFrame(users[FIRST_USER]).number + 1, rollNumber: ROLL_ONE.id)
+            return new RollCommand(user: users[FIRST_USER],
+                    frame: new Frame(number: getLastUserFrame(users[FIRST_USER]).number + 1), rollNumber: ROLL_ONE.id)
         } else {
-            RollCommand roll = new RollCommand(userNumber: users.size() - 1)
-            roll.frameNumber = getLastUserFrame(lastUser).number
+            RollCommand roll = new RollCommand(user: users.last())
+            roll.frame = getLastUserFrame(lastUser)
             roll.rollNumber = getRollNumberForNotEndedFrame(getLastUserFrame(lastUser))
             return roll
         }
@@ -176,25 +176,24 @@ class GameService {
         }
     }
 
-    private calculateMaxValue(Game game, RollCommand roll) {
+    private calculateMaxValue(RollCommand roll) {
         if (roll.rollNumber == ROLL_ONE.id) {
             roll.maxValue = ALL_BOWLS
         } else {
-            calculateMaxValueForRollTwoAndThree(game, roll)
+            calculateMaxValueForRollTwoAndThree(roll)
         }
     }
 
-    private calculateMaxValueForRollTwoAndThree(Game game, RollCommand roll) {
-        User user = game.users.find { it.number == roll.userNumber }
-        Frame frame = user.frames.find { it.number == roll.frameNumber}
+    private calculateMaxValueForRollTwoAndThree( RollCommand roll) {
         if (roll.rollNumber == ROLL_TWO.id) {
-            calculateMaxValueForRollTwo(frame, roll)
+            calculateMaxValueForRollTwo(roll)
         } else {
-            calculateMaxValueForRollThree(frame, roll)
+            calculateMaxValueForRollThree(roll)
         }
     }
 
-    private calculateMaxValueForRollTwo(Frame frame, RollCommand roll) {
+    private calculateMaxValueForRollTwo(RollCommand roll) {
+        def frame = roll.frame
         if (frame.number != LAST_FRAME) {
             roll.maxValue = ALL_BOWLS - frame.rollOne
         } else {
@@ -206,7 +205,8 @@ class GameService {
         }
     }
 
-    private calculateMaxValueForRollThree(Frame frame, RollCommand roll) {
+    private calculateMaxValueForRollThree(RollCommand roll) {
+        def frame = roll.frame
         if (frame.isStrike()) {
             if (frame.rollTwo == ALL_BOWLS) {
                 roll.maxValue = ALL_BOWLS

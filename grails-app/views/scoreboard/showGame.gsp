@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-            <h2 class="game">Game id = ${renderMap.game} </h2>
+            <h2 class="game">Game id = ${renderMap.game}</h2>
             <g:form action="saveRoll" method="POST">
                 <table class="table table-bordered middle">
                     <tr class="head-row info">
@@ -54,10 +54,13 @@
                                 </td>
                             </g:if>
                         </g:each>
-                        <g:if test="${nextRoll?.userNumber == i}">
+                        <g:if test="${nextRoll?.user?.number == i}">
                             <g:hiddenField name="roll.game" value="${nextRoll.game}" />
-                            <g:hiddenField name="roll.userNumber" value="${nextRoll.userNumber}" />
-                            <g:hiddenField name="roll.frameNumber" value="${nextRoll.frameNumber}" />
+                            <g:hiddenField name="roll.user.id" value="${nextRoll.user.id}" />
+                            <g:if test="${nextRoll.frame.id}">
+                                <g:hiddenField name="roll.frame.id" value="${nextRoll.frame.id}" />
+                            </g:if>
+                            <g:hiddenField name="roll.frame.number" value="${nextRoll.frame.number}" />
                             <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />
                             <td>
                                 <g:select name="roll.value" from="${0..nextRoll.maxValue}" />

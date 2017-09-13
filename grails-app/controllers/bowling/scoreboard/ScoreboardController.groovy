@@ -37,7 +37,6 @@ class ScoreboardController {
     }
 
     def saveRoll(RollCommand roll) {
-        // TODO to add validation
         Game game = gameDBService.addRollInGame roll
         redirect action: 'showGame', params: [id: game.id]
     }
