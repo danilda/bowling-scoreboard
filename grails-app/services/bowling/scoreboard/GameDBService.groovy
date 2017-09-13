@@ -18,7 +18,7 @@ class GameDBService {
     }
 
     def addRollInGame(RollCommand roll) {
-        Game game = Game.get(roll.game)
+        Game game = roll.user.game
         addRollInUser(roll)
         scoreService.calculateFrames roll.user
         game.save()

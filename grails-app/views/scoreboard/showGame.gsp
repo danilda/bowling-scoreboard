@@ -55,7 +55,6 @@
                             </g:if>
                         </g:each>
                         <g:if test="${nextRoll?.user?.number == i}">
-                            <g:hiddenField name="roll.game" value="${nextRoll.game}" />
                             <g:hiddenField name="roll.user.id" value="${nextRoll.user.id}" />
                             <g:if test="${nextRoll.frame.id}">
                                 <g:hiddenField name="roll.frame.id" value="${nextRoll.frame.id}" />

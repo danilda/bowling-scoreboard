@@ -112,7 +112,6 @@ class GameService {
             return null
         }
         RollCommand roll = getNextRoll(game)
-        roll.game = game.id
         calculateMaxValue(roll)
         roll
     }
