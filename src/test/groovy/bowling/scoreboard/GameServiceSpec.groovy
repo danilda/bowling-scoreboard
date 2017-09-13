@@ -109,9 +109,9 @@ class GameServiceSpec extends HibernateSpec implements ServiceUnitTest<GameServi
         game.addToUsers(user3)
         RollCommand roll = service.getNextStep(game)
         then:
-        roll.user == (long)1
+        roll.user.number == (long)1
         roll.rollNumber == 1
-        roll.frame == 5
+        roll.frame.number == 5
         roll.maxValue == 8
 
         when: "Test with ended game"

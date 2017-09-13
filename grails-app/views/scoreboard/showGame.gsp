@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-            <h2 class="game">Game id = ${renderMap.game} nextRoll.maxValue = ${nextRoll.maxValue}</h2>
+            <h2 class="game">Game id = ${renderMap.game}</h2>
             <g:form action="saveRoll" method="POST">
                 <table class="table table-bordered middle">
                     <tr class="head-row info">
@@ -63,7 +63,7 @@
                             <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />
                             <g:hiddenField name="roll.maxValue" value="${nextRoll.maxValue}" />
                             <td>
-                                <g:select name="roll.value" from="${0..nextRoll.maxValue+1}" />
+                                <g:select name="roll.value" from="${0..nextRoll.maxValue}" />
                             </td>
                         </g:if>
                         </tr>
