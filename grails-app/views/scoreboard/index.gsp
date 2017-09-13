@@ -8,7 +8,7 @@
         <div class="middle main">
             <h1 class="head"> Bowling Scoreboard </h1>
             <h3>
-                <g:link controller="scoreboard" action="addUser">Create new game</g:link>
+                <g:link controller="scoreboard" action="addUsers">Create new game</g:link>
             </h3>
             <h3>
                 <g:link controller="scoreboard" action="showGameList">Show all games</g:link>

@@ -2,7 +2,7 @@ package commandObject
 
 import bowling.scoreboard.Game
 
-class RollCommand {
+class RollCommand implements grails.validation.Validateable{
     Long game
     Integer userNumber
     Integer frameNumber

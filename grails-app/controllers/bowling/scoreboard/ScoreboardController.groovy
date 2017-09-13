@@ -16,7 +16,7 @@ class ScoreboardController {
 
     def addNewGame(UsersNamesCommand users) {
         if (users.hasErrors()) {
-            respond users.errors, view:'addUser', model:[users: users, error: true]
+            render users.errors, view:'addUser', model:[users: users, error: true]
             return
         }
         List<User> usersForSave = []
@@ -46,7 +46,6 @@ class ScoreboardController {
     }
 
     def showGameList(){
-        render view: "showGameList" ,model: [gameList : Game.list(params)]
-//        render model: [gameList : Game.list(params)]
+        render view: "showGameList", model: [gameList: Game.list()]
     }
 }
