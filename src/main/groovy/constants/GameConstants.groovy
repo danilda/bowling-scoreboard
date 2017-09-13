@@ -10,4 +10,5 @@ class GameConstants {
     public static final FIRST_USER = 0
     public static final MAX_NUMBER_OF_USERS = 6
     public static final MIN_NUMBER_OF_USERS = 1
+    public static final DATE_FORMAT_FOR_JSON = "yyyy-MM-dd'T'HH:mm:ssZ"
 }
