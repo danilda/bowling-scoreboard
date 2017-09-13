@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-            <h2 class="game">Game id = ${renderMap.game}</h2>
+            <h2 class="game">Game id = ${renderMap.game} nextRoll.maxValue = ${nextRoll.maxValue}</h2>
             <g:form action="saveRoll" method="POST">
                 <table class="table table-bordered middle">
                     <tr class="head-row info">
@@ -61,8 +61,9 @@
                             </g:if>
                             <g:hiddenField name="roll.frame.number" value="${nextRoll.frame.number}" />
                             <g:hiddenField name="roll.rollNumber" value="${nextRoll.rollNumber}" />
+                            <g:hiddenField name="roll.maxValue" value="${nextRoll.maxValue}" />
                             <td>
-                                <g:select name="roll.value" from="${0..nextRoll.maxValue}" />
+                                <g:select name="roll.value" from="${0..nextRoll.maxValue+1}" />
                             </td>
                         </g:if>
                         </tr>
@@ -76,6 +77,16 @@
                 <g:if test="${nextRoll != null}">
                     <g:actionSubmit value="Save Roll" class="btn btn-primary save-roll" action="saveRoll"/>
                 </g:if>
+
+                <g:if test="${error}">
+                    <g:hasErrors bean="${roll}">
+                        <div class="alert alert-warning alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <strong>Warning!</strong> <g:message error="${roll?.errors?.getFieldErrors()[0]}" />
+                        </div>
+                    </g:hasErrors>
+                </g:if>
+
             </g:form>
         </div>
     </body>

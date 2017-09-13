@@ -37,6 +37,12 @@ class ScoreboardController {
     }
 
     def saveRoll(RollCommand roll) {
+        if(roll.hasErrors()){
+            Map renderMap = gameService.getModelForRendering roll.user.game
+            render view: "showGame", model: [renderMap: renderMap, nextRoll: gameService.getNextStep(roll.user.game),
+                                             error: true, roll: roll]
+            return
+        }
         Game game = gameDBService.addRollInGame roll
         redirect action: 'showGame', params: [id: game.id]
     }

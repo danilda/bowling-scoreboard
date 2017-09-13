@@ -49,6 +49,8 @@
         userCount = ${(users?.names?.size()?:0) - 1 };
         MAX_NUMBER_OF_USERS = ${constants.GameConstants.MAX_NUMBER_OF_USERS};
         MIN_NUMBER_OF_USERS = ${constants.GameConstants.MIN_NUMBER_OF_USERS};
+        MIN_NUMBER_OF_USERS_MESSAGE = "${g.message(code: 'minListSize.commandObject.UsersNamesCommand.names')}";
+        MAX_NUMBER_OF_USERS_MESSAGE = "${g.message(code: 'maxListSize.commandObject.UsersNamesCommand.names')}";
     </script>
     <asset:javascript src="jquery-2.2.0.min.js"/>
     <asset:javascript src="customScripts/addUser.js"/>

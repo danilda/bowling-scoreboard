@@ -6,7 +6,7 @@ if(userCount++ == -1){
 
 $("#add-user").click(function(){
     if(userCount >= MAX_NUMBER_OF_USERS - 1){
-        alert("Maximum number of players 6");
+        alert(MAX_NUMBER_OF_USERS_MESSAGE);
         return;
     }
     userCount++;
@@ -15,7 +15,7 @@ $("#add-user").click(function(){
 
 $("#remove-user").click(function(){
     if(userCount <= MIN_NUMBER_OF_USERS - 1){
-        alert("Mininum number of players 1");
+        alert(MIN_NUMBER_OF_USERS_MESSAGE);
         return;
     }
     $(".user" + userCount--).remove();
