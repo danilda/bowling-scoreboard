@@ -21,7 +21,8 @@ class GameService {
     public static final String EMPTY = ""
 
     def getModelForRendering(Game game) {
-        List<User> users = game.getUsers().sort SORT_BY_NUMBER
+//        List<User> users = game.getUsers().sort SORT_BY_NUMBER
+        List<User> users = User.createCriteria().list{ eq("game", game) order("number", "ASC")}
         List<Map> resultUserList = users.collect { user ->
             [name: user.getName(), frames: getFrameListFromUser(user)]
         }
