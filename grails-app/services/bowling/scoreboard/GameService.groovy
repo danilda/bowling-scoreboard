@@ -21,8 +21,7 @@ class GameService {
     public static final String EMPTY = ""
 
     def getModelForRendering(Game game) {
-//        List<User> users = game.getUsers().sort SORT_BY_NUMBER
-        List<User> users = User.createCriteria().list{ eq("game", game) order("number", "ASC")}
+        List<User> users = game.getUsers().sort SORT_BY_NUMBER
         List<Map> resultUserList = users.collect { user ->
             [name: user.getName(), frames: getFrameListFromUser(user)]
         }
@@ -30,13 +29,12 @@ class GameService {
     }
 
     private getFrameListFromUser(User user) {
-        List<Map> resultFrameList = []
-        if (user.frames != null) {
-            resultFrameList = user.frames.sort(SORT_BY_NUMBER).collect { frame ->
-                getRollMapFromFrame(frame)
-            }
+        if (user.frames == null) {
+            return []
         }
-        resultFrameList
+        user.frames.sort(SORT_BY_NUMBER).collect { frame ->
+            getRollMapFromFrame(frame)
+        }
     }
 
     private getRollMapFromFrame(Frame frame) {
@@ -56,7 +54,7 @@ class GameService {
         if (frame.isStrike()) {
             rolls << [rollOne: STRIKE, rollTwo: EMPTY]
         } else {
-            def rollTwo = null
+            def rollTwo
             if (frame.isSpare()) {
                 rollTwo = SPARE
             } else {
@@ -131,12 +129,17 @@ class GameService {
     }
 
     private isAnyUserHasFrame(Game game) {
-        for (i in FIRS_FRAME..<game.users.size()) {
+//        User user = User.createCriteria().get{
+//            eq("game", game)
+//            sizeGe("frames", 0)
+//        }
+        for (i in FIRST_USER..<game.users.size()) {
             if (game.users[i].frames.size() > 0) {
                 return true
             }
         }
         false
+//        User.where
     }
 
     private getRollByProcessingNotLastUser(List<User> users, int i) {
@@ -234,10 +237,7 @@ class GameService {
     }
 
     def isFrameEnded(Frame frame) {
-        if (frame.rollOne == null || frame.rollTwo == null || (frame.number == LAST_FRAME && frame.rollThree == null)) {
-            return false
-        }
-        true
+        !(frame.rollOne == null || frame.rollTwo == null || (frame.number == LAST_FRAME && frame.rollThree == null))
     }
 
     def getLastUserFrame(User user) {

@@ -17,7 +17,7 @@ class ScoreService {
         for (int i in FIRS_FRAME..frames.size()-1) {
             int score = calculateOneFrame(frames, i)
             if (i != FIRS_FRAME) {
-                frames[i].score = frames[i - 1].score + score
+                frames[i].score = frames[i - 1]?.score + score
             } else {
                 frames[i].score = score
             }
