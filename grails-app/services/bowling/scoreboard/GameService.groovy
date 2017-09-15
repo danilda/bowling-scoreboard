@@ -129,17 +129,10 @@ class GameService {
     }
 
     private isAnyUserHasFrame(Game game) {
-//        User user = User.createCriteria().get{
-//            eq("game", game)
-//            sizeGe("frames", 0)
-//        }
-        for (i in FIRST_USER..<game.users.size()) {
-            if (game.users[i].frames.size() > 0) {
-                return true
-            }
-        }
-        false
-//        User.where
+        User.createCriteria().list{
+            eq("game", game)
+            sizeGt("frames", 0)
+        }.size()
     }
 
     private getRollByProcessingNotLastUser(List<User> users, int i) {
